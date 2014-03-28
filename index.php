@@ -68,6 +68,22 @@ if(count($registrants) > 0) {
     th { font-size: 1.2em; text-align: left; border: none; padding-left: 0; }
     td { padding: 0.25em 2em 0.25em 0em; border: 0 none; }
 </style>
+
+<style>
+body { font-family: arial; font-size: 14px; }
+.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+.liveExample input { font-family: Arial; }
+.liveExample b { font-weight: bold; }
+.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+.liveExample select[multiple] { width: 100%; height: 8em; }
+.liveExample h2 { margin-top: 0.4em; }
+
+.planet { background-color: #AAEECC; padding: 0.25em; border: 1px solid silver; margin-bottom: 0.5em; font-size: 0.75em; }
+.planet.rock { background-color: #EECCAA; }
+.liveExample input { margin: 0 0.3em 0 1em; }
+
+li { list-style-type: disc; margin-left: 20px; }
+</style>
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type='text/javascript' src='knockout-3.1.0.js'></script>
 </head>
@@ -81,6 +97,7 @@ if(count($registrants) > 0) {
 </form>
 <br/>
 <br/>
+<div class="liveExample">
 <h2>Planets</h2>
 <p> 
     <label>
@@ -106,6 +123,7 @@ if(count($registrants) > 0) {
     <button data-bind='click: addPlanet.bind($data, "rock")'>Add rocky planet</button>
     <button data-bind='click: addPlanet.bind($data, "gasgiant")'>Add gas giant</button>
 </p>
+</div>
 <script>
 var PlanetsModel = function() {
     this.planets = ko.observableArray([

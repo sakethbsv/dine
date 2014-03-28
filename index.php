@@ -1,3 +1,69 @@
+
+
+<html>
+<head>
+<Title>Registration Form</Title>
+<style type="text/css">
+    body { background-color: #fff; border-top: solid 10px #000;
+        color: #333; font-size: .85em; margin: 20; padding: 20;
+        font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    }
+    h1, h2, h3,{ color: #000; margin-bottom: 0; padding-bottom: 0; }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.75em; }
+    h3 { font-size: 1.2em; }
+    table { margin-top: 0.75em; }
+    th { font-size: 1.2em; text-align: left; border: none; padding-left: 0; }
+    td { padding: 0.25em 2em 0.25em 0em; border: 0 none; }
+</style>
+
+<style>
+body { font-family: arial; font-size: 14px; }
+.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+.liveExample input { font-family: Arial; }
+.liveExample b { font-weight: bold; }
+.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+.liveExample select[multiple] { width: 100%; height: 8em; }
+.liveExample h2 { margin-top: 0.4em; }
+
+.planet { background-color: #AAEECC; padding: 0.25em; border: 1px solid silver; margin-bottom: 0.5em; font-size: 0.75em; }
+.planet.rock { background-color: #EECCAA; }
+.liveExample input { margin: 0 0.3em 0 1em; }
+
+li { list-style-type: disc; margin-left: 20px; }
+</style>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type='text/javascript' src='knockout-3.1.0.js'></script>
+</head>
+<body>
+
+<div class="liveExample">
+<h2>Planets</h2>
+<p> 
+    <label>
+        <input type='checkbox' data-bind='checked: displayAdvancedOptions' />
+        Display advanced options
+    </label>
+</p>
+ 
+<p data-bind='fadeVisible: displayAdvancedOptions'>
+    Show:
+    <label><input type='radio' name="type" value='all' data-bind='checked: typeToShow' />All</label>
+    <label><input type='radio' name="type" value='rock' data-bind='checked: typeToShow' />Rocky planets</label>
+    <label><input type='radio' name="type" value='gasgiant' data-bind='checked: typeToShow' />Gas giants</label>
+</p>
+ 
+<div data-bind='template: { foreach: planetsToShow,
+                            beforeRemove: hidePlanetElement,
+                            afterAdd: showPlanetElement }'>
+    <div data-bind='attr: { "class": "planet " + type }, text: name'> </div>
+</div>
+ 
+<p data-bind='fadeVisible: displayAdvancedOptions'>
+    <button data-bind='click: addPlanet.bind($data, "rock")'>Add rocky planet</button>
+    <button data-bind='click: addPlanet.bind($data, "gasgiant")'>Add gas giant</button>
+</p>
+</div>
 <?php
 $host = "tcp:d6wfefgfjk.database.windows.net,1433";
 $user = "saketh@d6wfefgfjk";
@@ -51,43 +117,6 @@ if(count($registrants) > 0) {
     echo "<h3>No one is currently registered.</h3>";
 }
 ?>
-
-<html>
-<head>
-<Title>Registration Form</Title>
-<style type="text/css">
-    body { background-color: #fff; border-top: solid 10px #000;
-        color: #333; font-size: .85em; margin: 20; padding: 20;
-        font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
-    }
-    h1, h2, h3,{ color: #000; margin-bottom: 0; padding-bottom: 0; }
-    h1 { font-size: 2em; }
-    h2 { font-size: 1.75em; }
-    h3 { font-size: 1.2em; }
-    table { margin-top: 0.75em; }
-    th { font-size: 1.2em; text-align: left; border: none; padding-left: 0; }
-    td { padding: 0.25em 2em 0.25em 0em; border: 0 none; }
-</style>
-
-<style>
-body { font-family: arial; font-size: 14px; }
-.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
-.liveExample input { font-family: Arial; }
-.liveExample b { font-weight: bold; }
-.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
-.liveExample select[multiple] { width: 100%; height: 8em; }
-.liveExample h2 { margin-top: 0.4em; }
-
-.planet { background-color: #AAEECC; padding: 0.25em; border: 1px solid silver; margin-bottom: 0.5em; font-size: 0.75em; }
-.planet.rock { background-color: #EECCAA; }
-.liveExample input { margin: 0 0.3em 0 1em; }
-
-li { list-style-type: disc; margin-left: 20px; }
-</style>
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type='text/javascript' src='knockout-3.1.0.js'></script>
-</head>
-<body>
 <h1>Register here!</h1>
 <p>Fill in your name and email address, then click <strong>Submit</strong> to register.</p>
 <form method="post" action="index.php" enctype="multipart/form-data" >
@@ -97,33 +126,6 @@ li { list-style-type: disc; margin-left: 20px; }
 </form>
 <br/>
 <br/>
-<div class="liveExample">
-<h2>Planets</h2>
-<p> 
-    <label>
-        <input type='checkbox' data-bind='checked: displayAdvancedOptions' />
-        Display advanced options
-    </label>
-</p>
- 
-<p data-bind='fadeVisible: displayAdvancedOptions'>
-    Show:
-    <label><input type='radio' name="type" value='all' data-bind='checked: typeToShow' />All</label>
-    <label><input type='radio' name="type" value='rock' data-bind='checked: typeToShow' />Rocky planets</label>
-    <label><input type='radio' name="type" value='gasgiant' data-bind='checked: typeToShow' />Gas giants</label>
-</p>
- 
-<div data-bind='template: { foreach: planetsToShow,
-                            beforeRemove: hidePlanetElement,
-                            afterAdd: showPlanetElement }'>
-    <div data-bind='attr: { "class": "planet " + type }, text: name'> </div>
-</div>
- 
-<p data-bind='fadeVisible: displayAdvancedOptions'>
-    <button data-bind='click: addPlanet.bind($data, "rock")'>Add rocky planet</button>
-    <button data-bind='click: addPlanet.bind($data, "gasgiant")'>Add gas giant</button>
-</p>
-</div>
 <script>
 var PlanetsModel = function() {
     this.planets = ko.observableArray([

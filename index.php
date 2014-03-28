@@ -68,6 +68,7 @@ if(count($registrants) > 0) {
     th { font-size: 1.2em; text-align: left; border: none; padding-left: 0; }
     td { padding: 0.25em 2em 0.25em 0em; border: 0 none; }
 </style>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type='text/javascript' src='knockout-3.1.0.js'></script>
 </head>
 <body>

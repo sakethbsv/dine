@@ -7,8 +7,14 @@ $(function() {
         $itemList = $('#show-items'),
         $editable = $('.editable'),
         $clearAll = $('#clear-all'),
-        $newTodo = $('#todo'),
+        $comment = $('#comment'),
+		$name = $('#name'),
+		$no = $('#number'),
+		$size = $('#size'),
+		$time = $('#time'),
         order = [],
+		data,
+		data1,
         orderList;
 
     // Load todo list
@@ -18,11 +24,16 @@ $(function() {
     
     for( j = 0, k = orderList.length; j < k; j++) {
 		console.log(localStorage.getItem(orderList[j]));
-        $itemList.append(
+		data = localStorage.getItem(orderList[j]).split(',');
+		$itemList.append(
             "<li id='" + orderList[j] + "'>"
             + "<span class='editable'>" 
-            + localStorage.getItem(orderList[j]) 
-            + "</span> <a href='#'>X</a></li>"
+            + data[0]
+            + "</span> &nbsp;&nbsp;&nbsp;<span>"+data[1]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data[2]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data[3]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data[4]+"</span>"
+			+ "<a href='#'>X</a></li>"
         );
     }
         
@@ -77,22 +88,35 @@ $(function() {
         
     // Subscribes
     $.subscribe('/add/', function() {
-        if ($newTodo.val() !== "") {
+        if ($comment.val() !== "") {
             // Take the value of the input field and save it to localStorage
             localStorage.setItem( 
-                "todo-" + i, $newTodo.val() 
+                "todo-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val()
             );
             
             // Set the to-do max counter so on page refresh it keeps going up instead of reset
             localStorage.setItem('todo-counter', i);
             
             // Append a new list item with the value of the new todo list
-            $itemList.append(
+			data1 = localStorage.getItem("todo-" + i).split(',');
+		$itemList.append(
+            "<li id='todo-" + i + "'>"
+            + "<span class='editable'>" 
+            + data1[0]
+            + "</span> &nbsp;&nbsp;&nbsp;<span>"+data1[1]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data1[2]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data1[3]+"</span>"
+			+ "&nbsp;&nbsp;&nbsp;<span>"+data1[4]+"</span>"
+			+ "<a href='#'>X</a></li>"
+        );
+		
+		alert("Added a party to waitlist");
+            /*$itemList.append(
                 "<li id='todo-" + i + "'>"
                 + "<span class='editable'>"
                 + localStorage.getItem("todo-" + i) 
                 + " </span><a href='#'>x</a></li>"
-            );
+            );*/
 
             $.publish('/regenerate-list/', []);
 
@@ -102,7 +126,11 @@ $(function() {
                 .fadeIn();
             
             // Empty the input field
-            $newTodo.val("");
+            $comment.val("");
+			$size.val("");
+			$no.val("");
+			$name.val("");
+			$time.val("");
             
             i++;
         }

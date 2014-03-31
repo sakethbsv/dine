@@ -6,6 +6,7 @@
     <style type="text/css"></style></head>
     <body>
         <h4 style="left:0px">Dine-Services</h4>
+        <div id="time-div" style="position:absolute; font-size:36px; top:20px; right:100px">TIME</div>
         <div id="container" style="position:relative">
         <div id="add-user" style="display:none; position:absolute; left:0px; top:0p; background:#FFF; z-index:10">
         	<button id="back" onClick="back()" style="font-size:18px; float:right">X Back</button><br/><br/><br/><br/>
@@ -20,9 +21,25 @@
             </form>
             </div><br/>
         <button id="add" onClick="displayAddUserForm()" style="font-size:18px">+ Add to Waitlist</button>
-            <h1>Waitlist</h1> 
+        
+<h1>Waitlist</h1> 
             
-            <ul id="show-items" style="width:800px" class="ui-sortable"></ul>
+            <!--<ul id="show-items" style="width:800px" class="ui-sortable"></ul><br/><br/>-->
+            <table id="show-items-table" style="font-size:18px">
+    <tr>
+    <th width="100">Size</th>
+    <th width="100">Name</th>
+    <th width="100">Arrived</th>
+    <th width="100">Quoted</th>
+    <th width="100">Waiting</th>
+    <th width="100">Notify</th>
+    <th width="100">Seat</th>
+    <th width="100">Comment</th>
+    <th width="100">Remove</th>
+  </tr>
+
+</table>
+<br/><br/>
             <a href="http://web.koesbong.com/demo/codingtest/#" id="clear-all">Clear All</a>
         </div>
         
@@ -43,5 +60,19 @@ function back(){
 	$("#add-user").fadeOut();
 	console.log("Add Form removed");				
 }
+
+function DisplayTime(){
+var timeElement=document.getElementById("time-div");
+var CurrentDate=new Date();
+var hours=CurrentDate.getHours();
+var minutes=CurrentDate.getMinutes();
+var seconds=CurrentDate.getSeconds();
+if (minutes<=9) minutes="0"+minutes;
+if (seconds<=9) seconds="0"+seconds;
+var currentTime=hours+":"+minutes+":"+seconds;
+timeElement.innerHTML=currentTime;
+setTimeout("DisplayTime()",1000);
+}
+window.onload=DisplayTime();
 </script>
 </body></html>

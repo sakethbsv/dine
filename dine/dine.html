@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Dine-Services</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/base.css" type="text/css">
+    <style type="text/css"></style></head>
+    <body>
+        <h4 style="left:0px">Dine-Services</h4>
+        <div id="container" style="position:relative">
+        <div id="add-user" style="display:none; position:absolute; left:0px; top:0p; background:#FFF">
+        	<button id="back" onClick="back()" style="font-size:18px; float:right">X Back</button><br/><br/><br/><br/>
+            <form id="todo-form">
+               
+                <label class="label"> Name : </label> <input id="name" type="text"><br/><br/>
+                <label class="label"> Ph. Number : </label>  <input id="number" type="text"><br/><br/>
+                <label class="label"> Party size : </label><input id="size" type="text"><br/><br/>
+                <label class="label"> Wait time :</label> <input id="time" type="text"><br/><br/>
+                <label class="label"> Comment :</label> <input id="todo" type="text"><br/><br/>
+                <input id="submit" type="submit" value="Add to Waitlist">
+            </form>
+            </div><br/>
+        <button id="add" onClick="displayAddUserForm()" style="font-size:18px">+ Add to Waitlist</button>
+            <h1>Waitlist</h1> 
+            
+            <ul id="show-items" style="width:400px" class="ui-sortable"></ul>
+            <a href="http://web.koesbong.com/demo/codingtest/#" id="clear-all">Clear All</a>
+        </div>
+        
+        <!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+<script src="js/jquery-1.4.4.min.js"></script>
+        <script src="js/jquery-ui-1.8.7.custom.min.js"></script>
+        <script src="js/jquery.inlineedit.js"></script>
+        <script src="js/pubsub.js"></script>
+        <!--<script src="./CodingTest To-do List_files/getPathPlus.min.js"></script>-->
+        <script src="js/base.js"></script>
+<script>
+function displayAddUserForm(){
+	$("#add-user").fadeIn();
+	console.log("Add Form displayed");				
+}
+function back(){
+	$("#add-user").fadeOut();
+	console.log("Add Form removed");				
+}
+</script>
+</body></html>

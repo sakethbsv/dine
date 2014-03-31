@@ -37,7 +37,7 @@ $(function() {
         var $this = $(this);
         
         e.preventDefault();
-        $.publish('/remove/', [$this, "crao"]);
+        $.publish('/remove/', [$this]);
     });
     
     // Sort todo
@@ -108,9 +108,9 @@ $(function() {
         }
     });
 var gen;    
-    $.subscribe('/remove/', function($this, gen) {
+    $.subscribe('/remove/', function($this) {
         var parentId = $this.parent().attr('id');
-		alert(gen);
+		
         
         // Remove todo list from localStorage based on the id of the clicked parent element
         localStorage.removeItem(

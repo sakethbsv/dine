@@ -24,7 +24,17 @@ $(function() {
     for( j = 0, k = orderList.length; j < k; j++) {
 		console.log(localStorage.getItem(orderList[j]));
 		data = localStorage.getItem(orderList[j]).split(',');
-		
+		var arrived = data[5].split(":");
+		var CurrentDate=new Date();
+		var hours=CurrentDate.getHours();
+		var minutes=CurrentDate.getMinutes();
+		var wait1 = minutes - Number(arrived[1]);
+		var wait2 = hours - Number(arrived[0]);
+		if(wait1 < 0) {
+			wait1 = 60 + wait1;
+			wait2 -= 1;
+		}
+		var waited = wait2 + ":" + wait1;
 			$itemTable.append(
             " <tr id='" + orderList[j] + "'>"
             + "<td>" 
@@ -32,7 +42,7 @@ $(function() {
             + "</td> &nbsp;&nbsp;&nbsp;<td>"+data[0]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[2]+"</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>"
+			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">"+waited+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Notify</a></td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Seat</a></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data[4]+"</td>"

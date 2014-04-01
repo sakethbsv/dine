@@ -69,9 +69,32 @@ var minutes=CurrentDate.getMinutes();
 var seconds=CurrentDate.getSeconds();
 if (minutes<=9) minutes="0"+minutes;
 if (seconds<=9) seconds="0"+seconds;
-var currentTime=hours+":"+minutes+":"+seconds;
+var currentTime=hours+":"+minutes;
 timeElement.innerHTML=currentTime;
-setTimeout("DisplayTime()",1000);
+$(".waited").each(function( index, element ) {
+  //alert( index + ": " + $( element).text() );
+  var arrived = $(element).parent().find('td:eq(3)').text().split(":");
+  var waited = $(element).text().split(":");
+  var waitedhrs = Number(waited[0]);
+  var waitedmin = Number(waited[1]) + 1;
+  //alert(waitedhrs + " " + waitedmin);
+  if(waitedmin == 60) {
+	  waitedmin = 0;
+	  waitedhrs += 1;
+  }
+  console.log("here");
+  $(element).html(waitedhrs + ":" + waitedmin);
+  if(waitedhrs > Number(arrived[0])){
+	   $(element).css("color", "red");
+	//   	   alert("red");
+  }
+  if(waitedhrs == Number(arrived[0]) && waitedmin >= Number(arrived[1])){
+	   $(element).css("color", "red");
+	 //  alert("red");
+  }
+  //alert(gen);
+});
+setTimeout("DisplayTime()",60000);
 }
 window.onload=DisplayTime();
 </script>

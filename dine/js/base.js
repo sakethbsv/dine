@@ -169,6 +169,7 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
+							alert("Response" + response);
 							if(response == "success"){
 							alert("Response" + response);
 
@@ -176,6 +177,7 @@ function Sync(){
 								console.log("ajax success");
 							}
 							else{
+								
 								console.log(response + "ajax response");
 								toSync.push("todo-" + i);
 								localStorage.setItem(
@@ -187,9 +189,12 @@ function Sync(){
 				
 			}
 			catch(exception){
+				alert("Ajax cup");
 				console.log("ajax exception");
 				toSync.push("todo-" + i);
-			
+				localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
 			}
 			
             // Append a new list item with the value of the new todo list

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html manifest="/cache.manifest"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Dine-Services</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/base.css" type="text/css">
+        
     <style type="text/css"></style></head>
     <body>
         <h4 style="left:0px">Dine-Services</h4>
+        <button id="sync" onClick="Sync()" style="font-size:18px" style="left:0px">Sync</button>
         <div id="time-div" style="position:absolute; font-size:36px; top:20px; right:100px">TIME</div>
         <div id="container" style="position:relative">
         <div id="add-user" style="display:none; position:absolute; left:0px; top:0p; background:#FFF; z-index:10">
@@ -86,13 +88,10 @@ $(".waited").each(function( index, element ) {
   $(element).html(waitedhrs + ":" + waitedmin);
   if(waitedhrs > Number(arrived[0])){
 	   $(element).css("color", "red");
-	//   	   alert("red");
   }
   if(waitedhrs == Number(arrived[0]) && waitedmin >= Number(arrived[1])){
 	   $(element).css("color", "red");
-	 //  alert("red");
   }
-  //alert(gen);
 });
 setTimeout("DisplayTime()",60000);
 }

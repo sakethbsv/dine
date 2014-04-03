@@ -1,4 +1,53 @@
-$(function() {
+var toSync = [];
+function Sync(){
+	  alert("Syncing");
+	 if(toSync.length == 0){
+		alert("Database is synced on cloud completely"); 
+	 }
+	 else{
+		alert("Database will now sync. Please make sure of internet connection.");
+		for(var z = 0; z < toSync.length; z++){
+			var datarow = localStorage.getItem(localStorage.key(z)).split(",");
+			try{
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "add.php",
+					data: {
+						name: datarow[0],
+						number: datarow[1],
+						time: datarow[2],
+						size: datarow[3],
+						comment: datarow[4]
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							alert("Response" + response);
+							if(response == "success"){
+								//sync = true;
+								console.log("ajax success");
+								var index = toSync.indexOf(localStorage.key(z));
+								toSync.splice(index, 1);
+							}
+							else{
+								console.log(response + "ajax response");
+								toSync.push("todo-" + i);
+							}
+					  }
+			    });
+				
+			}
+			catch(exception){
+				console.log("ajax exception");
+				toSync.push("todo-" + i);
+			
+			}
+			
+		}
+	 }
+	 }
+	 
+	$( document ).ready(function() {
+    console.log( "ready!" );
     var i = Number(localStorage.getItem('todo-counter')) + 1,
         j = 0,
         k,
@@ -42,18 +91,16 @@ $(function() {
             + "</td> &nbsp;&nbsp;&nbsp;<td>"+data[0]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[2]+"</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">"+waited+"</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Notify</a></td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Seat</a></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td class='waited'>"+waited+"</td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><span href='#'><b>Notify</b></span></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><span href='#'><b>Seat</b></span></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data[4]+"</td>"
 			+ "<td><a href='#'>X</a></td></tr>"
         );
     
     }
      
-	 
-	
-	    
+	 Sync();
     // Add todo
     $form.submit(function(e) {
         e.preventDefault();
@@ -87,11 +134,11 @@ $(function() {
      
     // Subscribes
     $.subscribe('/add/', function() {
-        if ($comment.val() !== "") {
+        if ($comment.val() != "") {
             // Take the value of the input field and save it to localStorage
 			var d = new Date();
 			var $now = d.getHours() + ":" + d.getMinutes();
-
+			
             localStorage.setItem( 
                 "todo-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now
             );
@@ -99,6 +146,39 @@ $(function() {
             // Set the to-do max counter so on page refresh it keeps going up instead of reset
             localStorage.setItem('todo-counter', i);
             
+			try{
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "add.php",
+					data: {
+						name: $name.val(),
+						number: $no.val(),
+						time: $time.val(),
+						size: $size.val(),
+						comment: $comment.val(),
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							if(response == "success"){
+							alert("Response" + response);
+
+		//						sync = true;
+								console.log("ajax success");
+							}
+							else{
+								console.log(response + "ajax response");
+								toSync.push("todo-" + i);
+							}
+					  }
+			    });
+				
+			}
+			catch(exception){
+				console.log("ajax exception");
+				toSync.push("todo-" + i);
+			
+			}
+			
             // Append a new list item with the value of the new todo list
 			data1 = localStorage.getItem("todo-" + i).split(',');
 		

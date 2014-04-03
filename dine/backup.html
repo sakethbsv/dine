@@ -2,6 +2,7 @@ var toSync = [];
 toSync = localStorage.getItem('toSyncArray');
 toSync = toSync ? toSync.split(',') : [];
 console.log(toSync + " toSyncArrayfromlocalDB");
+alert(toSync + "to Sync array");
 
 function Sync(){
 	  alert("Syncing");
@@ -22,29 +23,33 @@ function Sync(){
 						size: datarow[3],
 						comment: datarow[4]
 					},
-					dataType: "html", //expect html to be returned                
+					dataType: "html", //expect html to be returned  
+					timeout: 15000,              
 					success: function (response) {
-								alert("Response" + response);
-								if(response == "success"){
-									//sync = true;
-									console.log("ajax success");
-									var index = toSync.indexOf(localStorage.key(z));
-									toSync.splice(index, 1);
-									localStorage.setItem(
-									   'toSyncArray', toSync.join(',')
-									   );
-								}
-								else{
-									console.log(response + "ajax response");
-									
-								}
-					  },
-					  error: function(XMLHttpRequest, textStatus, errorThrown) {
+							alert("Response" + response);
+							if(response == "success"){
+							//alert("Response" + response);
+
+		//						sync = true;
+								console.log("ajax success");
+							}
+							else{
+								
+								console.log(response + "ajax response");
+								toSync.push("todo-" + i);
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
+							}
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
      
 							alert("Ajax cup");
 							console.log("ajax exception");
 							
-					   }
+						}
+					
 			    });
 				
 			
@@ -165,6 +170,7 @@ function Sync(){
 						size: $size.val(),
 						comment: $comment.val(),
 					},
+					timeout: 15000,
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
 							alert("Response" + response);
@@ -194,9 +200,7 @@ function Sync(){
 											   );
 						}
 					  
-			    });
-				
-			
+			    })
 			
 			
             // Append a new list item with the value of the new todo list

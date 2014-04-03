@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="/cache.manifest"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html manifest="cache.manifest"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Dine-Services</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/base.css" type="text/css">
@@ -84,7 +84,7 @@ $(".waited").each(function( index, element ) {
 	  waitedmin = 0;
 	  waitedhrs += 1;
   }
-  console.log("here");
+  //console.log("here");
   $(element).html(waitedhrs + ":" + waitedmin);
   if(waitedhrs > Number(arrived[0])){
 	   $(element).css("color", "red");

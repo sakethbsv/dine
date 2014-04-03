@@ -35,12 +35,12 @@ try {
     $date = date("Y-m-d");
     // Insert data
     $sql_insert = "INSERT INTO dine_tbl (name, number, size, time, comment, date) 
-                   VALUES (?,?,?)";
+                   VALUES (?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql_insert);
     $stmt->bindValue(1, $name);
     $stmt->bindValue(2, $number);
     $stmt->bindValue(3, $size);
-	 $stmt->bindValue(4, $time);
+	$stmt->bindValue(4, $time);
     $stmt->bindValue(5, $comment);
     $stmt->bindValue(6, $date);
     $stmt->execute();

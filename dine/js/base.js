@@ -1,4 +1,8 @@
 var toSync = [];
+toSync = localStorage.getItem('toSyncArray');
+toSync = toSync ? toSync.split(',') : [];
+console.log(toSync + " toSyncArrayfromlocalDB");
+
 function Sync(){
 	  alert("Syncing");
 	 if(toSync.length == 0){
@@ -27,10 +31,16 @@ function Sync(){
 								console.log("ajax success");
 								var index = toSync.indexOf(localStorage.key(z));
 								toSync.splice(index, 1);
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
 							}
 							else{
 								console.log(response + "ajax response");
 								toSync.push("todo-" + i);
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
 							}
 					  }
 			    });
@@ -168,6 +178,9 @@ function Sync(){
 							else{
 								console.log(response + "ajax response");
 								toSync.push("todo-" + i);
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
 							}
 					  }
 			    });

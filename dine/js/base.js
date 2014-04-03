@@ -177,6 +177,7 @@ function Sync(){
 							else{
 								
 								console.log(response + "ajax response");
+								alert("pushing to to-sync " + i)
 								toSync.push("todo-" + i);
 								localStorage.setItem(
          						   'toSyncArray', toSync.join(',')
@@ -188,6 +189,7 @@ function Sync(){
      
 							alert("Ajax cup");
 							console.log("ajax exception");
+							alert("pushing to to-sync " + i)
 							toSync.push("todo-" + i);
 							localStorage.setItem(
 											   'toSyncArray', toSync.join(',')

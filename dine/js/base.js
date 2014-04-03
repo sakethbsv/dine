@@ -24,33 +24,30 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
-							try{
-								alert("Response" + response);
-								if(response == "success"){
-									//sync = true;
-									console.log("ajax success");
-									var index = toSync.indexOf(localStorage.key(z));
-									toSync.splice(index, 1);
-									localStorage.setItem(
-									   'toSyncArray', toSync.join(',')
-									   );
-								}
-								else{
-									console.log(response + "ajax response");
-									toSync.push("todo-" + i);
-									localStorage.setItem(
-									   'toSyncArray', toSync.join(',')
-									   );
-								}
+							alert("Response" + response);
+							if(response == "success"){
+							//alert("Response" + response);
+
+		//						sync = true;
+								console.log("ajax success");
 							}
-							catch(exception){
-								console.log("ajax exception");
+							else{
+								
+								console.log(response + "ajax response");
 								toSync.push("todo-" + i);
-							    localStorage.setItem(
-									   'toSyncArray', toSync.join(',')
-									   );
-			}
-					  }
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
+							}
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("Ajax cup");
+							console.log("ajax exception");
+							
+						}
+					
 			    });
 				
 			
@@ -173,7 +170,6 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
-						try{
 							alert("Response" + response);
 							if(response == "success"){
 							//alert("Response" + response);
@@ -189,8 +185,10 @@ function Sync(){
          						   'toSyncArray', toSync.join(',')
      							   );
 							}
-						}
-						catch(exception){
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
 							alert("Ajax cup");
 							console.log("ajax exception");
 							toSync.push("todo-" + i);
@@ -198,7 +196,7 @@ function Sync(){
 											   'toSyncArray', toSync.join(',')
 											   );
 						}
-					  }
+					  
 			    });
 				
 			

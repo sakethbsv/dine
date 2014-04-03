@@ -22,7 +22,8 @@ function Sync(){
 						size: datarow[3],
 						comment: datarow[4]
 					},
-					dataType: "html", //expect html to be returned                
+					dataType: "html", //expect html to be returned  
+					timeout: 15000,              
 					success: function (response) {
 							alert("Response" + response);
 							if(response == "success"){
@@ -168,6 +169,7 @@ function Sync(){
 						size: $size.val(),
 						comment: $comment.val(),
 					},
+					timeout: 15000,
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
 							alert("Response" + response);
@@ -197,9 +199,7 @@ function Sync(){
 											   );
 						}
 					  
-			    });
-				
-			
+			    })
 			
 			
             // Append a new list item with the value of the new todo list

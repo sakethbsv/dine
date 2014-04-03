@@ -12,7 +12,6 @@ function Sync(){
 		alert("Database will now sync. Please make sure of internet connection.");
 		for(var z = 0; z < toSync.length; z++){
 			var datarow = localStorage.getItem(localStorage.key(z)).split(",");
-			try{
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
 					url: "add.php",
@@ -25,32 +24,37 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
-							alert("Response" + response);
-							if(response == "success"){
-								//sync = true;
-								console.log("ajax success");
-								var index = toSync.indexOf(localStorage.key(z));
-								toSync.splice(index, 1);
-								localStorage.setItem(
-         						   'toSyncArray', toSync.join(',')
-     							   );
+							try{
+								alert("Response" + response);
+								if(response == "success"){
+									//sync = true;
+									console.log("ajax success");
+									var index = toSync.indexOf(localStorage.key(z));
+									toSync.splice(index, 1);
+									localStorage.setItem(
+									   'toSyncArray', toSync.join(',')
+									   );
+								}
+								else{
+									console.log(response + "ajax response");
+									toSync.push("todo-" + i);
+									localStorage.setItem(
+									   'toSyncArray', toSync.join(',')
+									   );
+								}
 							}
-							else{
-								console.log(response + "ajax response");
+							catch(exception){
+								console.log("ajax exception");
 								toSync.push("todo-" + i);
-								localStorage.setItem(
-         						   'toSyncArray', toSync.join(',')
-     							   );
-							}
+							    localStorage.setItem(
+									   'toSyncArray', toSync.join(',')
+									   );
+			}
 					  }
 			    });
 				
-			}
-			catch(exception){
-				console.log("ajax exception");
-				toSync.push("todo-" + i);
 			
-			}
+			
 			
 		}
 	 }
@@ -156,7 +160,7 @@ function Sync(){
             // Set the to-do max counter so on page refresh it keeps going up instead of reset
             localStorage.setItem('todo-counter', i);
             
-			try{
+			
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
 					url: "add.php",
@@ -169,9 +173,10 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
+						try{
 							alert("Response" + response);
 							if(response == "success"){
-							alert("Response" + response);
+							//alert("Response" + response);
 
 		//						sync = true;
 								console.log("ajax success");
@@ -184,18 +189,20 @@ function Sync(){
          						   'toSyncArray', toSync.join(',')
      							   );
 							}
+						}
+						catch(exception){
+							alert("Ajax cup");
+							console.log("ajax exception");
+							toSync.push("todo-" + i);
+							localStorage.setItem(
+											   'toSyncArray', toSync.join(',')
+											   );
+						}
 					  }
 			    });
 				
-			}
-			catch(exception){
-				alert("Ajax cup");
-				console.log("ajax exception");
-				toSync.push("todo-" + i);
-				localStorage.setItem(
-         						   'toSyncArray', toSync.join(',')
-     							   );
-			}
+			
+			
 			
             // Append a new list item with the value of the new todo list
 			data1 = localStorage.getItem("todo-" + i).split(',');

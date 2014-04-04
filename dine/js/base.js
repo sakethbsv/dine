@@ -11,7 +11,8 @@ function Sync(){
 	 else{
 		alert("Database will now sync. Please make sure of internet connection.");
 		for(var z = 0; z < toSync.length; z++){
-			var datarow = localStorage.getItem(localStorage.key(z)).split(",");
+			var datarow = localStorage.getItem(toSync[z]).split(",");
+			//alert(datarow[2]);
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
 					url: "add.php",
@@ -100,16 +101,17 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class='waited'>"+waited+"</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><span href='#'><b>Notify</b></span></td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><span href='#'><b>Seat</b></span></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><b>Notify</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data[4]+"</td>"
 			+ "<td><a href='#'>X</a></td></tr>"
         );
     
     }
      
-	 Sync();
-    // Add todo
+	Sync();
+    
+	// Add todo
     $form.submit(function(e) {
         e.preventDefault();
         $.publish('/add/', []);
@@ -142,7 +144,11 @@ function Sync(){
      
     // Subscribes
     $.subscribe('/add/', function() {
-        if ($comment.val() != "") {
+		
+		//alert(i + "i");
+        i = Number(localStorage.getItem('todo-counter'));
+		//alert("new i" + i);
+		if ($comment.val() != "") {
             // Take the value of the input field and save it to localStorage
 			var d = new Date();
 			var $now = d.getHours() + ":" + d.getMinutes();
@@ -167,30 +173,31 @@ function Sync(){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
-							alert("Response" + response);
-							if(response == "success"){
 							//alert("Response" + response);
+							if(response == "success"){
+							alert("ajax success");
 
 		//						sync = true;
 								console.log("ajax success");
 							}
 							else{
-								
+    							alert("Ajax cup and not net cup");
 								console.log(response + "ajax response");
-								alert("pushing to to-sync " + i)
+								alert("pushing to to-sync from success function " + i)
 								toSync.push("todo-" + i);
 								localStorage.setItem(
          						   'toSyncArray', toSync.join(',')
      							   );
+								   
 							}
 					},
 					
 					error: function(XMLHttpRequest, textStatus, errorThrown) {
      
-							alert("Ajax cup");
+							alert("net cup and not ajax cup");
 							console.log("ajax exception");
-							alert("pushing to to-sync " + i)
-							toSync.push("todo-" + i);
+							alert("pushing to to-sync from error function " + i)
+							toSync.push("todo-" + (i-1));
 							localStorage.setItem(
 											   'toSyncArray', toSync.join(',')
 											   );
@@ -213,8 +220,8 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data1[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data1[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Notify</a></td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><a href='#'>Seat</a></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><b>Notify</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data1[4]+"</td>"
      		+ "<td><a href='#'>X</a></td></tr>"
         );
@@ -234,7 +241,8 @@ function Sync(){
 			$name.val("");
 			$time.val("");
             
-            i++;
+			localStorage.setItem('todo-counter', i+1);
+            //i++;
         }
     });
 var gen;    
@@ -246,7 +254,12 @@ var gen;
         localStorage.removeItem(
             parentId
         );
-        
+		
+		var index = toSync.indexOf(parentId);
+		//alert(index + "index");
+		toSync.splice(index, 1);	
+		localStorage.setItem('toSyncArray', toSync.join(','));
+										   		
         // Fade out the list item then remove from DOM
         $this.parent().parent().fadeOut(function() { 
             $this.parent().parent().remove();

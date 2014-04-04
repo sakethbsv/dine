@@ -197,7 +197,7 @@ function Sync(){
 							alert("net cup and not ajax cup");
 							console.log("ajax exception");
 							alert("pushing to to-sync from error function " + i)
-							toSync.push("todo-" + (i-1));
+							toSync.push("todo-" + (i));
 							localStorage.setItem(
 											   'toSyncArray', toSync.join(',')
 											   );

@@ -161,6 +161,32 @@ function Sync(){
             localStorage.setItem('todo-counter', i);
             
 			
+				//Getting previous visits
+			$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "check.php",
+					data: {						
+						number: $no.val(),						
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							//alert("Response" + response);
+							alert('Previous Visits');
+							alert(response);
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("net cup and not ajax cup");
+							console.log("ajax exception");
+							alert("Unable to get previous visits");
+							
+						}
+					  
+			    });	
+			
+			
+				//Adding to cloud
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
 					url: "add.php",
@@ -183,7 +209,7 @@ function Sync(){
 							else{
     							alert("Ajax cup and not net cup");
 								console.log(response + "ajax response");
-								alert("pushing to to-sync from success function " + i)
+								alert("pushing to to-sync from success function " + i);
 								toSync.push("todo-" + i);
 								localStorage.setItem(
          						   'toSyncArray', toSync.join(',')
@@ -196,7 +222,7 @@ function Sync(){
      
 							alert("net cup and not ajax cup");
 							console.log("ajax exception");
-							alert("pushing to to-sync from error function " + i)
+							alert("pushing to to-sync from error function " + i);
 							toSync.push("todo-" + (i));
 							localStorage.setItem(
 											   'toSyncArray', toSync.join(',')

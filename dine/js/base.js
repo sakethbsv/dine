@@ -178,7 +178,7 @@ function Sync(){
 					error: function(XMLHttpRequest, textStatus, errorThrown) {
      
 							alert("net cup and not ajax cup");
-							console.log("ajax exception");
+							console.log("ajax exception" + textStatus + errorThrown);
 							alert("Unable to get previous visits");
 							
 						}

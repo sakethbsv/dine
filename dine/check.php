@@ -13,6 +13,7 @@ catch(Exception $e){
     die(var_dump($e));
 	echo("failure, check IC");
 }
+$number = '9840346380';
 if(!empty($_POST['number'])){
 	$number = $_POST['number'];
 }

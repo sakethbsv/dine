@@ -172,7 +172,7 @@ function Sync(){
 					success: function (response) {
 							//alert("Response" + response);
 							alert('Previous Visits');
-							alert(response);
+							alert(response + "Response for prev visits");
 					},
 					
 					error: function(XMLHttpRequest, textStatus, errorThrown) {

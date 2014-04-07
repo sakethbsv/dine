@@ -3,6 +3,31 @@ toSync = localStorage.getItem('toSyncArray');
 toSync = toSync ? toSync.split(',') : [];
 console.log(toSync + " toSyncArrayfromlocalDB");
 
+function Notify(notifNum){
+	
+	console.log(notifNum);	
+	//https://control.msg91.com/api/sendhttp.php?authkey=65373Aur7ub23VBi533913dd&mobiles=9840346380&message=Your%20table%20is%20now%20ready&sender=DINEIN&route=4	
+	
+	$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "notify.php",
+					data: {
+						number: notifNum
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+								alert("Response for msg sending" + response);
+								
+					  },
+					 error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("Ajax cup for senging msg");
+							console.log("ajax exception");
+							
+					   }
+			    });
+}
+
 function Sync(){
 	  alert("Syncing");
 	 if(toSync.length == 0){
@@ -101,10 +126,10 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class='waited'>"+waited+"</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><b>Notify</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data[4]+"</td>"
-			+ "<td><a href='#'>X</a></td></tr>"
+			+ "<td><a class='remove' href='#'>X</a></td></tr>"
         );
     
     }
@@ -117,13 +142,22 @@ function Sync(){
         $.publish('/add/', []);
     });
 	
-	$itemTable.delegate('a', 'click', function(e) {
+	$itemTable.delegate('.remove', 'click', function(e) {
         var $this = $(this);
         
         e.preventDefault();
         $.publish('/remove/', [$this, "table"]);
     });
-   
+	
+	$itemTable.delegate('.notify', 'click', function(e) {
+        var $this = $(this);
+        e.preventDefault();
+        var notifyId = $(this).parent().parent().attr('id');
+		console.log(notifyId + 'notifying');
+		var data2 = localStorage.getItem(notifyId).split(',');
+  			Notify(data2[1]);
+    });
+
 	/*
     // Edit and save todo
     $editable.inlineEdit({
@@ -246,10 +280,10 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data1[5]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data1[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><b>Notify</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data1[4]+"</td>"
-     		+ "<td><a href='#'>X</a></td></tr>"
+     		+ "<td><a class='remove' href='#'>X</a></td></tr>"
         );
 		
 

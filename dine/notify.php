@@ -7,7 +7,7 @@ $authKey = "65373Aur7ub23VBi533913dd";
 if(!empty($_POST['number'])){
 	$mobileNumber = $_POST['number'];
 }
-$mobileNumber = '9840346380';
+//$mobileNumber = '9840346380';
 //Sender ID,While using route4 sender id should be 6 characters long.
 $senderId = "DINEIN";
 

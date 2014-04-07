@@ -18,6 +18,7 @@ if(!empty($_POST['number'])){
 	$number = $_POST['number'];
 }
 $sql_select = "SELECT * FROM dine_tbl1 WHERE number = " + $number;
+echo "Atleast wrks till here";
 echo $sql_select;
 $stmt = $conn->query($sql_select);
 $registrants = $stmt->fetchAll(); 

@@ -12,7 +12,7 @@ echo $mobileNumber;
 $senderId = "DINEIN";
 
 //Your message to send, Add URL endcoding here.
-$message = urlencode("Your table is ready. Please come by as soon as possible");
+$message = urlencode("Your table is ready. Please come by as soon as possible. Sent using PHP");
 
 //Define route 
 $route = "4";
@@ -39,9 +39,9 @@ curl_setopt_array($ch, array(
 ));
 
 //get response
-//$output = curl_exec($ch);
+$output = curl_exec($ch);
 
-//curl_close($ch);
+curl_close($ch);
 
-//echo $output;
+echo $output;
 ?>

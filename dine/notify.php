@@ -7,7 +7,7 @@ $authKey = "65373Aur7ub23VBi533913dd";
 if(!empty($_POST['number'])){
 	$mobileNumber = $_POST['number'];
 }
-
+echo $mobileNumber;
 //Sender ID,While using route4 sender id should be 6 characters long.
 $senderId = "DINEIN";
 
@@ -39,9 +39,9 @@ curl_setopt_array($ch, array(
 ));
 
 //get response
-$output = curl_exec($ch);
+//$output = curl_exec($ch);
 
-curl_close($ch);
+//curl_close($ch);
 
-echo $output;
+//echo $output;
 ?>

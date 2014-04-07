@@ -13,12 +13,12 @@ catch(Exception $e){
     die(var_dump($e));
 	echo("failure, check IC");
 }
-$number = '9840346380';
+//$number = '9840346380';
 if(!empty($_POST['number'])){
 	$number = $_POST['number'];
 }
-$sql_select = "SELECT * FROM dine_tbl1 WHERE number = " + $number;
-echo $sql_select;
+$sql_select = "SELECT * FROM dine_tbl1 WHERE number = " . $number;
+//echo $sql_select;
 $stmt = $conn->query($sql_select);
 $registrants = $stmt->fetchAll(); 
 if(count($registrants) > 0) {
@@ -26,9 +26,9 @@ if(count($registrants) > 0) {
     echo "<table>";
     echo "<tr><th>Name</th>";
     echo "<th>Number</th>";
-    echo "<th>Date</th></tr>";
-    echo "<th>Time</th></tr>";
-    echo "<th>Size</th></tr>";
+    echo "<th>Date</th>";
+    echo "<th>Time</th>";
+    echo "<th>Size</th>";
     echo "<th>Comment</th></tr>";
 
     foreach($registrants as $registrant) {

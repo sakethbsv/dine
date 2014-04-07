@@ -30,6 +30,7 @@ $url="https://control.msg91.com/sendhttp.php";
 
 // init the resource
 $ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt_array($ch, array(
     CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,

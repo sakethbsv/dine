@@ -28,7 +28,7 @@ try {
 
     //$date = date("Y-m-d");
     // Insert data
-    $sql_insert = "UPDATE dine_tbl1 SET bit=1 WHERE number=". $number ." AND date=" . $date;
+    $sql_insert = "UPDATE dine_tbl1 SET bit=1 WHERE number=". $number ." AND date='" . $date . "'";
     $stmt = $conn->prepare($sql_insert);
     $stmt->execute();
 	echo "success";

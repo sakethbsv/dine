@@ -20,7 +20,8 @@ if(!empty($_POST['date'])){
 	$date = $_POST['date'];
 }
 
-
+echo $number;
+echo $date;
 
 //if(!empty($_POST)) {
 try {

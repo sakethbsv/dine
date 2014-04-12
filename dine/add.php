@@ -34,7 +34,7 @@ try {
 
     $date = date("Y-m-d");
     // Insert data
-    $sql_insert = "INSERT INTO dine_tbl1 (name, number, size, time, comment, date) 
+    $sql_insert = "INSERT INTO dine_tbl1 (name, number, size, time, comment, date, seated) 
                    VALUES (?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql_insert);
     $stmt->bindValue(1, $name);
@@ -43,6 +43,7 @@ try {
 	$stmt->bindValue(4, $time);
     $stmt->bindValue(5, $comment);
     $stmt->bindValue(6, $date);
+    $stmt->bindValue(7, 0);
     $stmt->execute();
 	echo "success";
 }

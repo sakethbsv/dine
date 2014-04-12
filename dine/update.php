@@ -28,6 +28,7 @@ try {
 
     //$date = date("Y-m-d");
 	//echo $date;
+
     // Insert data
     $sql_insert = "UPDATE dine_tbl1 SET seated=1 WHERE number=". $number ." AND date='" . $date . "'";
     $stmt = $conn->prepare($sql_insert);

@@ -1,7 +1,11 @@
 var toSync = [];
+var seatedToSync = [];
 toSync = localStorage.getItem('toSyncArray');
 toSync = toSync ? toSync.split(',') : [];
 console.log(toSync + " toSyncArrayfromlocalDB");
+seatedToSync = localStorage.getItem('seatedToSyncArray');
+seatedToSync = seatedToSync ? seatedToSync.split(',') : [];
+console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 
 function Notify(notifNum){
 	
@@ -25,6 +29,53 @@ function Notify(notifNum){
 							console.log("ajax exception");
 							
 					   }
+			    });
+}
+
+function Seat(num1, date1, d){
+	
+	console.log(num1, date1);	
+	
+	$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "update.php",
+					data: {
+						number: num1,
+						date: date1
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							//alert("Response" + response);
+							if(response == "success"){
+							alert("ajax success");
+
+		//						sync = true;
+								console.log("ajax success");
+							}
+							else{
+    							alert("Ajax cup and not net cup");
+								console.log(response + "ajax response");
+								alert("pushing to seated-to-sync from success function " + d);
+								seatedToSync.push("guest-" + d);
+								localStorage.setItem(
+         						   'seatedToSyncArray', seatedToSync.join(',')
+     							   );
+								  
+								   
+							}
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("net cup and not ajax cup");
+							console.log("ajax exception");
+							alert("pushing to to-sync from error function " + d);
+							seatedToSync.push("guest-" + (d));
+							localStorage.setItem(
+											   'seatedToSyncArray', seatedToSync.join(',')
+											   );
+						}
+					  
 			    });
 }
 
@@ -78,14 +129,59 @@ function Sync(){
 			
 		}
 	 }
+	 if(seatedToSync.length == 0){
+		alert("Seated Database is synced on cloud completely"); 
+	 }
+	 else{
+		alert("Seated Database will now sync. Please make sure of internet connection.");
+		for(var z = 0; z < seatedToSync.length; z++){
+			var datarow = localStorage.getItem(seatedToSync[z]).split(",");
+			//alert(datarow[2]);
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "update.php",
+					data: {
+						number: datarow[1],
+						date: datarow[6]
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+								alert("Response" + response);
+								if(response == "success"){
+									//sync = true;
+									console.log("ajax success");
+									var index = seatedToSync.indexOf(localStorage.key(z));
+									seatedToSync.splice(index, 1);
+									localStorage.setItem(
+									   'seatedToSyncArray', toSync.join(',')
+									   );
+								}
+								else{
+									console.log(response + "ajax response");
+									
+								}
+					  },
+					  error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("Ajax cup");
+							console.log("ajax exception");
+							
+					   }
+			    });
+				
+			
+			
+			
+		}
+	 }
 	 }
 	 
 	$( document ).ready(function() {
     console.log( "ready!" );
-    var i = Number(localStorage.getItem('todo-counter')) + 1,
+    var i = Number(localStorage.getItem('guest-counter')) + 1,
         j = 0,
         k,
-        $form = $('#todo-form'),
+        $form = $('#guest-form'),
 		$itemTable = $('#show-items-table'),
         $editable = $('.editable'),
         $clearAll = $('#clear-all'),
@@ -99,8 +195,8 @@ function Sync(){
 		data1,
         orderList;
 
-    // Load todo list
-    orderList = localStorage.getItem('todo-orders');
+    // Load guest list
+    orderList = localStorage.getItem('guest-orders');
     console.log(orderList);
     orderList = orderList ? orderList.split(',') : [];
     
@@ -127,7 +223,7 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class='waited'>"+waited+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data[4]+"</td>"
 			+ "<td><a class='remove' href='#'>X</a></td></tr>"
         );
@@ -136,7 +232,7 @@ function Sync(){
      
 	Sync();
     
-	// Add todo
+	// Add guest
     $form.submit(function(e) {
         e.preventDefault();
         $.publish('/add/', []);
@@ -158,17 +254,21 @@ function Sync(){
   			Notify(data2[1]);
     });
 
-	/*
-    // Edit and save todo
-    $editable.inlineEdit({
-        save: function(e, data) {
-                var $this = $(this);
-                localStorage.setItem(
-                    $this.parent().attr("id"), data.value
-                );
-            }
+	$itemTable.delegate('.seat', 'click', function(e) {
+        var $this = $(this);
+        e.preventDefault();
+        var Id = $(this).parent().parent().attr('id');
+		console.log(Id + 'seating');
+		var d = Id.split('-')[1];
+		var data2 = localStorage.getItem(Id).split(',');
+  			Seat(data2[1], data2[6], d);
+		$this.parent().parent().fadeOut(function() { 
+        $this.parent().parent().remove();
+        $.publish('/regenerate-list/', []);
+        });
     });
-    */
+	
+	
     // Clear all
     $clearAll.click(function(e) {
         e.preventDefault();
@@ -180,19 +280,19 @@ function Sync(){
     $.subscribe('/add/', function() {
 		
 		//alert(i + "i");
-        i = Number(localStorage.getItem('todo-counter'));
+        i = Number(localStorage.getItem('guest-counter'));
 		//alert("new i" + i);
 		if ($comment.val() != "") {
             // Take the value of the input field and save it to localStorage
 			var d = new Date();
 			var $now = d.getHours() + ":" + d.getMinutes();
-			
+			var $date = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()
             localStorage.setItem( 
-                "todo-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now
+                "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
             );
             
             // Set the to-do max counter so on page refresh it keeps going up instead of reset
-            localStorage.setItem('todo-counter', i);
+            localStorage.setItem('guest-counter', i);
             
 			
 				//Getting previous visits
@@ -206,6 +306,7 @@ function Sync(){
 					success: function (response) {
 							//alert("Response" + response);
 							alert('Previous Visits');
+							
 							alert(response + "Response for prev visits");
 					},
 					
@@ -230,6 +331,7 @@ function Sync(){
 						time: $time.val(),
 						size: $size.val(),
 						comment: $comment.val(),
+						seated: 0
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
@@ -244,10 +346,11 @@ function Sync(){
     							alert("Ajax cup and not net cup");
 								console.log(response + "ajax response");
 								alert("pushing to to-sync from success function " + i);
-								toSync.push("todo-" + i);
+								toSync.push("guest-" + i);
 								localStorage.setItem(
          						   'toSyncArray', toSync.join(',')
      							   );
+								  
 								   
 							}
 					},
@@ -257,7 +360,7 @@ function Sync(){
 							alert("net cup and not ajax cup");
 							console.log("ajax exception");
 							alert("pushing to to-sync from error function " + i);
-							toSync.push("todo-" + (i));
+							toSync.push("guest-" + (i));
 							localStorage.setItem(
 											   'toSyncArray', toSync.join(',')
 											   );
@@ -268,12 +371,12 @@ function Sync(){
 			
 			
 			
-            // Append a new list item with the value of the new todo list
-			data1 = localStorage.getItem("todo-" + i).split(',');
+            // Append a new list item with the value of the new guest list
+			data1 = localStorage.getItem("guest-" + i).split(',');
 		
 		console.log("adding table entry")
 		$itemTable.append(
-            " <tr id='todo-" + i + "'>"
+            " <tr id='guest-" + i + "'>"
             + "<td>" 
             + data1[3]
             + "</td> &nbsp;&nbsp;&nbsp;<td>"+data1[0]+"</td>"
@@ -281,7 +384,7 @@ function Sync(){
 			+ "&nbsp;&nbsp;&nbsp;<td>"+data1[2]+"</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>"
 			+ "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>"
-			+ "&nbsp;&nbsp;&nbsp;<td><b>Seat</b></td>"
+			+ "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>"
 	     	+ "&nbsp;&nbsp;&nbsp;<td>"+data1[4]+"</td>"
      		+ "<td><a class='remove' href='#'>X</a></td></tr>"
         );
@@ -290,7 +393,7 @@ function Sync(){
             $.publish('/regenerate-list/', []);
 
             // Hide the new list, then fade it in for effects
-            $("#todo-" + i)
+            $("#guest-" + i)
                 .css('display', 'none')
                 .fadeIn();
             
@@ -301,7 +404,7 @@ function Sync(){
 			$name.val("");
 			$time.val("");
             
-			localStorage.setItem('todo-counter', i+1);
+			localStorage.setItem('guest-counter', i+1);
             //i++;
         }
     });
@@ -310,7 +413,7 @@ var gen;
 		
 		var parentId = $this.parent().parent().attr('id');
         
-        // Remove todo list from localStorage based on the id of the clicked parent element	
+        // Remove guest list from localStorage based on the id of the clicked parent element	
         localStorage.removeItem(
             parentId
         );
@@ -331,28 +434,28 @@ var gen;
     });
     
     $.subscribe('/regenerate-list/', function() {
-        //var $todoItemLi = $('#show-items li');
-		var $todoItemTr = $('#show-items-table tr').has('td');
+        //var $guestItemLi = $('#show-items li');
+		var $guestItemTr = $('#show-items-table tr').has('td');
         // Empty the order array
         order.length = 0;
         
         // Go through the list item, grab the ID then push into the array
-        $todoItemTr.each(function() {
+        $guestItemTr.each(function() {
             var id = $(this).attr('id');
             order.push(id);
         });
         // Convert the array into string and save to localStorage
         localStorage.setItem(
-            'todo-orders', order.join(',')
+            'guest-orders', order.join(',')
         );
     });
     
     $.subscribe('/clear-all/', function() {
-        //var $todoListLi = $('#show-items li');
-        var $todoTableTr = $('#show-items-table tr').has('td');
+        //var $guestListLi = $('#show-items li');
+        var $guestTableTr = $('#show-items-table tr').has('td');
         order.length = 0;
         localStorage.clear();
-        //$todoListLi.remove();
-		$todoTableTr.remove();
+        //$guestListLi.remove();
+		$guestTableTr.remove();
     });
 });

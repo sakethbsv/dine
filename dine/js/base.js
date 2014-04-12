@@ -251,7 +251,7 @@ function Sync(){
         var notifyId = $(this).parent().parent().attr('id');
 		console.log(notifyId + 'notifying');
 		var data2 = localStorage.getItem(notifyId).split(',');
-  			Notify(data2[1]);
+  		//	Notify(data2[1]);
     });
 
 	$itemTable.delegate('.seat', 'click', function(e) {

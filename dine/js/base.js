@@ -45,7 +45,7 @@ function Seat(num1, date1, d){
 					},
 					dataType: "html", //expect html to be returned                
 					success: function (response) {
-							//alert("Response" + response);
+							alert("Response" + response);
 							if(response == "success"){
 							alert("ajax success");
 
@@ -151,9 +151,11 @@ function Sync(){
 									//sync = true;
 									console.log("ajax success");
 									var index = seatedToSync.indexOf(localStorage.key(z));
+									alert(seatedToSync.length);
 									seatedToSync.splice(index, 1);
+									alert(seatedToSync.length);
 									localStorage.setItem(
-									   'seatedToSyncArray', toSync.join(',')
+									   'seatedToSyncArray', seatedToSync.join(',')
 									   );
 								}
 								else{
@@ -286,7 +288,7 @@ function Sync(){
             // Take the value of the input field and save it to localStorage
 			var d = new Date();
 			var $now = d.getHours() + ":" + d.getMinutes();
-			var $date = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()
+			var $date = d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()
             localStorage.setItem( 
                 "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
             );

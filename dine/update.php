@@ -26,7 +26,7 @@ echo $date;
 //if(!empty($_POST)) {
 try {
 
-    //$date = date("Y-m-d");
+    $date = date("Y-m-d");
     // Insert data
     $sql_insert = "UPDATE dine_tbl1 SET seated=1 WHERE number=". $number ." AND date='" . $date . "'";
     $stmt = $conn->prepare($sql_insert);

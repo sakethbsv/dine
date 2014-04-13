@@ -46,7 +46,7 @@ function login($email, $password, $mysqli) {
 		$db_password = $ans['password'];
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
-        if (count($stmt->num_rows) == 1) {
+        if (count($ans) == 1) {
             // If the user exists we check if the account is locked
             // from too many login attempts 
  

@@ -1,7 +1,7 @@
 <?php
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
- 
+echo "Works";
 sec_session_start();
  
 if (login_check($mysqli) == true) {
@@ -17,6 +17,7 @@ if (login_check($mysqli) == true) {
         <link rel="stylesheet" href="styles/main.css" />
         <script type="text/JavaScript" src="js/sha512.js"></script> 
         <script type="text/JavaScript" src="js/forms.js"></script> 
+        <script>alert("works")</script>
     </head>
     <body>
         <?php

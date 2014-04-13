@@ -29,7 +29,7 @@ function login($email, $password, $mysqli) {
     // Using prepared statements means that SQL injection is not possible. 
 	try{
 		echo "ok4";
-    if ($stmt = $mysqli->prepare("SELECT id, username, password, salt 
+    if ($stmt = $mysqli->prepare("SELECT TOP 1 id, username, password, salt 
         FROM members
        WHERE email = " .$email. " LIMIT 1")) {
 	    //$stmt->bindValue(1, $email);

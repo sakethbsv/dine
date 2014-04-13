@@ -29,10 +29,10 @@ function login($email, $password, $mysqli) {
     // Using prepared statements means that SQL injection is not possible. 
 	try{
 		echo "ok4";
-    if ($stmt = $mysqli->prepare("SELECT id, username, password, salt FROM members WHERE email = ?")) {
+    if ($stmt = $mysqli->prepare("SELECT TOP 1 id, username, password, salt FROM members WHERE email = '" . $email . "'")) {
 	    //$stmt->bindValue(1, $email);
 
-        $stmt->bindValue(1, $email);  // Bind "$email" to parameter.
+        //$stmt->bindValue(1, $email);  // Bind "$email" to parameter.
         $stmt->execute();    // Execute the prepared query.
 		echo "ok10";
         //$stmt->store_result();
@@ -40,10 +40,18 @@ function login($email, $password, $mysqli) {
         // get variables from result.
         //$stmt->bind_result($user_id, $username, $db_password, $salt);
         $ans = $stmt->fetchAll();
-		echo $ans['id'];
- 		echo "<br/>" . $ans['password'] . "<br/>";
-		$user_id = $ans['id'];
-		$db_password = $ans['password'];
+		foreach($ans as $answer) {
+        echo "<tr><td>".$answer['id']."</td>";
+        echo "<td>".$answer['password']."</td></tr>";
+		$user_id = $answer['id'];
+		$db_password = $answer['password'];
+		$username = $answer['username'];
+		$salt = $answer['salt'];
+
+		
+    	}
+		
+		
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
         if (count($ans) == 1) {
@@ -55,7 +63,7 @@ function login($email, $password, $mysqli) {
                 // Send an email to user saying their account is locked
 				echo "brute true";
                 return false;
-            } else {*/
+            } else {*/	
                 // Check if the password in the database matches
                 // the password the user submitted.
 				echo "<br/>" .$db_password . "<br/>";

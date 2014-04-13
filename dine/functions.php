@@ -49,12 +49,16 @@ function login($email, $password, $mysqli) {
             if (checkbrute($user_id, $mysqli) == true) {
                 // Account is locked 
                 // Send an email to user saying their account is locked
+				echo "brute true";
                 return false;
             } else {
                 // Check if the password in the database matches
                 // the password the user submitted.
+				echo "<br/>" .$db_password . "<br/>";
+				echo $password . "<br/>";
                 if ($db_password == $password) {
                     // Password is correct!
+					echo "Correct pass";
                     // Get the user-agent string of the user.
                     $user_browser = $_SERVER['HTTP_USER_AGENT'];
                     // XSS protection as we might print this value
@@ -68,13 +72,17 @@ function login($email, $password, $mysqli) {
                     $_SESSION['login_string'] = hash('sha512', 
                               $password . $user_browser);
                     // Login successful.
+					echo "Login Success";
                     return true;
                 } else {
                     // Password is not correct
                     // We record this attempt in the database
+					echo "Login fail 1";
                     $now = time();
                     $mysqli->query("INSERT INTO login_attempts(user_id, time)
                                     VALUES ('$user_id', '$now')");
+					echo "Login Fail";
+					
                     return false;
                 }
             }

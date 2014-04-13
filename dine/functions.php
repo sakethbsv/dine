@@ -28,6 +28,7 @@ function login($email, $password, $mysqli) {
 	echo "login function";
     // Using prepared statements means that SQL injection is not possible. 
 	try{
+		echo "ok4";
     if ($stmt = $mysqli->prepare("SELECT id, username, password, salt 
         FROM members
        WHERE email = ?
@@ -35,11 +36,13 @@ function login($email, $password, $mysqli) {
         $stmt->bind_param('s', $email);  // Bind "$email" to parameter.
         $stmt->execute();    // Execute the prepared query.
         $stmt->store_result();
- 
+ 		echo "ok5";
         // get variables from result.
         $stmt->bind_result($user_id, $username, $db_password, $salt);
         $stmt->fetch();
- 
+		echo $userid;
+ 		echo "<br/>" .$db_password . "<br/>";
+
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
         if ($stmt->num_rows == 1) {
@@ -88,6 +91,7 @@ function login($email, $password, $mysqli) {
             }
         } else {
             // No user exists.
+			echo "No user";
             return false;
         }
     }

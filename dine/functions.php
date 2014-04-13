@@ -32,7 +32,7 @@ function login($email, $password, $mysqli) {
     if ($stmt = $mysqli->prepare("SELECT id, username, password, salt FROM members WHERE email = ?")) {
 	    //$stmt->bindValue(1, $email);
 
-        $stmt->bind_param('s', $email);  // Bind "$email" to parameter.
+        $stmt->bindValue(1, $email);  // Bind "$email" to parameter.
         $stmt->execute();    // Execute the prepared query.
         $stmt->store_result();
  		echo "ok5";

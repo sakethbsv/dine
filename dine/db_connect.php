@@ -1,8 +1,8 @@
 <?php
 include_once 'psl-config.php';   // As functions.php is not included
 try {
-    $conn = new PDO( "sqlsrv:Server= $host ; Database = $db ", $user, $pwd);
-    $conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+    $mysqli = new PDO( "sqlsrv:Server= $host ; Database = $db ", $user, $pwd);
+    $mysqli->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 	echo("success");
 }
 catch(Exception $e){

@@ -59,10 +59,10 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
 		echo "inserting";
         // Insert the new user into the database 
         if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
-			$stmt->bindValue(1, $username);
-    		$stmt->bindValue(2, $email);
-   			$stmt->bindValue(3, $password);
-			$stmt->bindValue(4, $random_salt);
+			$insert_stmt->bindValue(1, $username);
+    		$insert_stmt->bindValue(2, $email);
+   			$insert_stmt->bindValue(3, $password);
+			$insert_stmt->bindValue(4, $random_salt);
             //$insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
             // Execute the prepared query.
 			echo "ok2";
@@ -72,6 +72,7 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
 			echo "ok3";
         }
 		echo "ok4";
+		
         header('Location: register_success.php');
     }
 }

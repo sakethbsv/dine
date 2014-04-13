@@ -49,14 +49,14 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
     // We'll also have to account for the situation where the user doesn't have
     // rights to do registration, by checking what type of user is attempting to
     // perform the operation.
- 
+ 	echo "ok1";
     if (empty($error_msg)) {
         // Create a random salt
         $random_salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
  
         // Create salted password 
         $password = hash('sha512', $password . $random_salt);
-
+		echo "inserting";
         // Insert the new user into the database 
         if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
 			$stmt->bindValue(1, $username);
@@ -65,10 +65,13 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
 			$stmt->bindValue(4, $random_salt);
             //$insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
             // Execute the prepared query.
+			echo "ok2";
             if (! $insert_stmt->execute()) {
-                header('Location: ../error.php?err=Registration failure: INSERT');
+                header('Location: error.php?err=Registration failure: INSERT');
             }
+			echo "ok3";
         }
-        header('Location: ./register_success.php');
+		echo "ok4";
+        header('Location: register_success.php');
     }
 }

@@ -35,17 +35,18 @@ function login($email, $password, $mysqli) {
         //$stmt->bindValue(1, $email);  // Bind "$email" to parameter.
         $stmt->execute($email);    // Execute the prepared query.
 		echo "ok10";
-        $stmt->store_result();
+        //$stmt->store_result();
  		echo "ok5";
         // get variables from result.
-        $stmt->bind_result($user_id, $username, $db_password, $salt);
-        $stmt->fetch();
-		echo $userid;
- 		echo "<br/>" .$db_password . "<br/>";
-
+        //$stmt->bind_result($user_id, $username, $db_password, $salt);
+        $ans = $stmt->fetchAll();
+		echo $ans['id'];
+ 		echo "<br/>" . $ans['password'] . "<br/>";
+		$user_id = $ans['id'];
+		$db_password = $ans['password'];
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
-        if ($stmt->num_rows == 1) {
+        if (count($stmt->num_rows) == 1) {
             // If the user exists we check if the account is locked
             // from too many login attempts 
  

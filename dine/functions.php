@@ -149,18 +149,22 @@ function login_check($mysqli) {
         // Get the user-agent string of the user.
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
  
-        if ($stmt = $mysqli->prepare("SELECT password 
+        if ($stmt = $mysqli->prepare("SELECT TOP 1 password 
                                       FROM members 
-                                      WHERE id = ? LIMIT 1")) {
+                                      WHERE id = '" . $user_id. "'")) {
             // Bind "$user_id" to parameter. 
-            $stmt->bind_param('i', $user_id);
+            //$stmt->bind_param('i', $user_id);
             $stmt->execute();   // Execute the prepared query.
-            $stmt->store_result();
- 
-            if ($stmt->num_rows == 1) {
+            //$stmt->store_result();
+ 			 $ans = $stmt->fetchAll();
+		foreach($ans as $answer) {
+		$password = $answer['password'];
+		}
+
+            if (count($ans) == 1) {
                 // If the user exists get variables from result.
-                $stmt->bind_result($password);
-                $stmt->fetch();
+                //$stmt->bind_result($password);
+                //$stmt->fetchAll();
                 $login_check = hash('sha512', $password . $user_browser);
  
                 if ($login_check == $login_string) {

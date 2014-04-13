@@ -25,8 +25,8 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
     // This should should be adequate as nobody gains any advantage from
     // breaking these rules.
     //
- 
-    $prep_stmt = "SELECT id FROM members WHERE email = ? LIMIT 1";
+ 	/*
+    $prep_stmt = "SELECT TOP 1 id FROM members WHERE email = '" .$email. "'";
     $stmt = $mysqli->prepare($prep_stmt);
  
     if ($stmt) {
@@ -41,7 +41,7 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
     } else {
         $error_msg .= '<p class="error">Database error</p>';
     }
- 
+ 	*/
     // TODO: 
     // We'll also have to account for the situation where the user doesn't have
     // rights to do registration, by checking what type of user is attempting to
@@ -53,10 +53,14 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
  
         // Create salted password 
         $password = hash('sha512', $password . $random_salt);
- 
+
         // Insert the new user into the database 
         if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
-            $insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
+			$stmt->bindValue(1, $username);
+    		$stmt->bindValue(2, $email);
+   			$stmt->bindValue(3, $password);
+			$stmt->bindValue(4, $random_salt);
+            //$insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
             // Execute the prepared query.
             if (! $insert_stmt->execute()) {
                 header('Location: ../error.php?err=Registration failure: INSERT');

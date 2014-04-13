@@ -50,12 +50,12 @@ function login($email, $password, $mysqli) {
             // If the user exists we check if the account is locked
             // from too many login attempts 
  
-            if (checkbrute($user_id, $mysqli) == true) {
+            /*if (checkbrute($user_id, $mysqli) == true) {
                 // Account is locked 
                 // Send an email to user saying their account is locked
 				echo "brute true";
                 return false;
-            } else {
+            } else {*/
                 // Check if the password in the database matches
                 // the password the user submitted.
 				echo "<br/>" .$db_password . "<br/>";
@@ -89,7 +89,7 @@ function login($email, $password, $mysqli) {
 					
                     return false;
                 }
-            }
+            //}
         } else {
             // No user exists.
 			echo "No user";

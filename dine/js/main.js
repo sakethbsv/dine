@@ -83,25 +83,6 @@ $.subscribe('/add/', function() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
 /*
 $(function() {
     var i = Number(localStorage.getItem('todo-counter')) + 1,
@@ -268,163 +249,186 @@ console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 /*$(document).ready(function() {*/
 
 
-    console.log("ready!");
-    var i = Number(localStorage.getItem('guest-counter')) + 1,
-        j = 0,
-        k,
-        $form = $('#party-form'),                               // The form to enter a new party information
-        $itemTable = $('#waitlist-table'),                      // The waitlist
-        $editable = $('.editable'),                             // No clue
-        $clearAll = $('#clear-all'),                            // No clear all button!!
-        $comment = $('#party-notes'),                           // Form element - comment
-        $name = $('#party-name'),                               // Form element - name
-        $no = $('#party-phone'),                                // Form element - number
-        $size = $('#party-size'),                               // Form element - size
-        $time = $('#party-wait-time'),                          // Form element - time
-        order = [],                                             // Order of the parties
-        data,
-        data1,
-        orderList;
+console.log("ready!");
+var i = Number(localStorage.getItem('guest-counter')) + 1,
+    j = 0,
+    k,
+    $form = $('#party-form'), // The form to enter a new party information
+    $itemTable = $('#waitlist-table'), // The waitlist
+    $editable = $('.editable'), // No clue
+    $clearAll = $('#clear-all'), // No clear all button!!
+    $comment = $('#party-notes'), // Form element - comment
+    $name = $('#party-name'), // Form element - name
+    $no = $('#party-phone'), // Form element - number
+    $size = $('#party-size'), // Form element - size
+    $time = $('#party-wait-time'), // Form element - time
+    order = [], // Order of the parties
+    data,
+    dataRow,
+    orderList;
 
-    // Load guest list
-    orderList = localStorage.getItem('guest-orders');
-    console.log(orderList);
-    orderList = orderList ? orderList.split(',') : [];
+// Load guest list
+orderList = localStorage.getItem('guest-orders');
+console.log(orderList);
+orderList = orderList ? orderList.split(',') : [];
 
-    for (j = 0, k = orderList.length; j < k; j++) {
-        console.log(localStorage.getItem(orderList[j]));
-        data = localStorage.getItem(orderList[j]).split(',');
-        var arrived = data[5].split(":");
-        var CurrentDate = new Date();
-        var hours = CurrentDate.getHours();
-        var minutes = CurrentDate.getMinutes();
-        var waitingMinutes = minutes - Number(arrived[1]);
-        var waitingHours = hours - Number(arrived[0]);
+for (j = 0, k = orderList.length; j < k; j++) {
+    console.log(localStorage.getItem(orderList[j]));
+    data = localStorage.getItem(orderList[j]).split(',');
+    var arrived = data[5].split(":");
+    var CurrentDate = new Date();
+    var hours = CurrentDate.getHours();
+    var minutes = CurrentDate.getMinutes();
+    var waitingMinutes = minutes - Number(arrived[1]);
+    var waitingHours = hours - Number(arrived[0]);
 
-        var wait1 = minutes - Number(arrived[1]);
-        var wait2 = hours - Number(arrived[0]);
+    var wait1 = minutes - Number(arrived[1]);
+    var wait2 = hours - Number(arrived[0]);
 
-        if (waitingMinutes < 0) {
-            wait1 = 60 + wait1;
-            wait2 -= 1;
-        }
-        var waited = waitingHours + ":" + waitingMinutes;
-        $itemTable.children("tbody").append(
-            "<tr id='" + orderList[j] + "'>" + 
-            "<td>" + data[3] + "</td> &nbsp;&nbsp;&nbsp;<td>" + data[0] + "</td>" + 
-            "&nbsp;&nbsp;&nbsp;<td>" + data[5] + "</td>" + 
-            "&nbsp;&nbsp;&nbsp;<td>" + data[2] + "</td>" + 
-            "&nbsp;&nbsp;&nbsp;<td class='waited'>" + waited + "</td>" + 
-            "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>" + 
-            "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>" + "&nbsp;&nbsp;&nbsp;<td>" + data[4] + "</td>" + 
-            "<td><a class='remove' href='#'>X</a></td></tr>"
-        );
+    if (waitingMinutes < 0) {
+        wait1 = 60 + wait1;
+        wait2 -= 1;
+    }
+    var waited = waitingHours + ":" + waitingMinutes;
 
+    dataRow = data;
+
+    var toAppendHTMLString = '';
+    toAppendHTMLString =    " <tr id='" + orderList[j] + "'>" + // adding the id for the table row
+                            "<td>" + 'status' + "</td>" + // html for the status column
+                            "<td>" + dataRow[3] + "</td>" + // size of the party
+                            "<td>" + dataRow[0] + "</td>" + // name of the party
+                            "<td>" + dataRow[5] + "</td>" + // arrival time of the party
+                            "<td>" + dataRow[2] + "</td>" + // quoted time of the party
+                            "<td class=\"waited\">0:0</td>" + // waiting time. Initially 0:0
+                            "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
+                            "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
+                            //"<td>" + dataRow[4] + "</td>" +                   // comments
+                            "<td><a class='remove' href='#'>X</a></td></tr>";
+
+    $itemTable.children('tbody').append(toAppendHTMLString);
+
+}
+
+//Sync();
+
+// Add guest
+$form.submit(function(e) {
+    e.preventDefault();
+    $.publish('/add/', []);
+    console.log('submit button pressed');
+});
+
+
+// On clicking the remove button in the table for a party
+$itemTable.delegate('.remove', 'click', function(e) {
+    var $this = $(this);
+    e.preventDefault();
+    $.publish('/remove/', [$this, "table"]);
+});
+
+// On clicking the notify button in the table for a party
+$itemTable.delegate('.notify', 'click', function(e) {
+    var $this = $(this);
+    e.preventDefault();
+    var notifyId = $(this).parent().parent().attr('id');
+    console.log(notifyId + 'notifying');
+    var data2 = localStorage.getItem(notifyId).split(',');
+    //  Notify(data2[1]);
+});
+
+// On clicking the seat button in the table for a party
+$itemTable.delegate('.seat', 'click', function(e) {
+    var $this = $(this);
+    e.preventDefault();
+    var Id = $(this).parent().parent().attr('id');
+    console.log(Id + 'seating');
+    var d = Id.split('-')[1];
+    var data2 = localStorage.getItem(Id).split(',');
+    //Seat(data2[1], data2[6], d);
+    $this.parent().parent().fadeOut(function() {
+        $this.parent().parent().remove();
+        $.publish('/regenerate-list/', []);
+    });
+});
+
+// Clear all
+$clearAll.click(function(e) {
+    e.preventDefault();
+    $.publish('/clear-all/', []);
+});
+
+
+
+// Subscribes
+$.subscribe('/add/', function() {
+    i = Number(localStorage.getItem('guest-counter'));
+    console.log('element added');
+
+    if ($comment.val() == "") {
+        console.log('the comment section is Empty');
     }
 
-    //Sync();
+    if ($comment.val() != "") {
+        // Take the value of the input field and save it to localStorage
+        var d = new Date();
+        var $now = d.getHours() + ":" + d.getMinutes();
+        var $date = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate()
+        localStorage.setItem(
+            "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
+        );
 
-    // Add guest
-    $form.submit(function(e) {
-        e.preventDefault();
-        $.publish('/add/', []);
-        console.log('submit button pressed');
-    });
-
-
-    // On clicking the remove button in the table for a party
-    $itemTable.delegate('.remove', 'click', function(e) {
-        var $this = $(this);
-        e.preventDefault();
-        $.publish('/remove/', [$this, "table"]);
-    });
-
-    // On clicking the notify button in the table for a party
-    $itemTable.delegate('.notify', 'click', function(e) {
-        var $this = $(this);
-        e.preventDefault();
-        var notifyId = $(this).parent().parent().attr('id');
-        console.log(notifyId + 'notifying');
-        var data2 = localStorage.getItem(notifyId).split(',');
-        //  Notify(data2[1]);
-    });
-
-    // On clicking the seat button in the table for a party
-    $itemTable.delegate('.seat', 'click', function(e) {
-        var $this = $(this);
-        e.preventDefault();
-        var Id = $(this).parent().parent().attr('id');
-        console.log(Id + 'seating');
-        var d = Id.split('-')[1];
-        var data2 = localStorage.getItem(Id).split(',');
-        //Seat(data2[1], data2[6], d);
-        $this.parent().parent().fadeOut(function() {
-            $this.parent().parent().remove();
-            $.publish('/regenerate-list/', []);
-        });
-    });
-
-    // Clear all
-    $clearAll.click(function(e) {
-        e.preventDefault();
-        $.publish('/clear-all/', []);
-    });
+        // Set the to-do max counter so on page refresh it keeps going up instead of reset
+        localStorage.setItem('guest-counter', i);
 
 
 
-    // Subscribes
-    $.subscribe('/add/', function() {
-        i = Number(localStorage.getItem('guest-counter'));
-        console.log('element added');
+        // Append a new list item with the value of the new guest list
+        dataRow = localStorage.getItem("guest-" + i).split(',');
 
-        if ($comment.val() == "") {
-            console.log('the comment section is Empty');
-        }
+        console.log("adding table entry")
 
-        if ($comment.val() != "") {
-            // Take the value of the input field and save it to localStorage
-            var d = new Date();
-            var $now = d.getHours() + ":" + d.getMinutes();
-            var $date = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate()
-            localStorage.setItem(
-                "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
-            );
+        var toAppendHTMLString = '';
+        toAppendHTMLString = "<tr id='guest-" + i + "'>" + // adding the id for the table row
+        "<td>" + 'status' + "</td>" + // html for the status column
+        "<td>" + dataRow[3] + "</td>" + // size of the party
+        "<td>" + dataRow[0] + "</td>" + // name of the party
+        "<td>" + dataRow[5] + "</td>" + // arrival time of the party
+        "<td>" + dataRow[2] + "</td>" + // quoted time of the party
+        "<td class=\"waited\">0:0</td>" + // waiting time. Initially 0:0
+        "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
+        "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
+        //"<td>" + dataRow[4] + "</td>" +                   // comments
+        "<td><a class='remove' href='#'>X</a></td></tr>";
 
-            // Set the to-do max counter so on page refresh it keeps going up instead of reset
-            localStorage.setItem('guest-counter', i);
+        $itemTable.children('tbody').append(toAppendHTMLString);
 
-
-
-            // Append a new list item with the value of the new guest list
-            data1 = localStorage.getItem("guest-" + i).split(',');
-
-            console.log("adding table entry")
-
-            $itemTable.children('tbody').append(
-                " <tr id='guest-" + i + "'>" + "<td>" + data1[3] + "</td> &nbsp;&nbsp;&nbsp;<td>" + data1[0] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[5] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[2] + "</td>" + "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>" + "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>" + "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[4] + "</td>" + "<td><a class='remove' href='#'>X</a></td></tr>"
-            );
+        //$itemTable.children('tbody').append(
+        //    " <tr id='guest-" + i + "'>" + "<td>" + data1[3] + "</td> &nbsp;&nbsp;&nbsp;<td>" + data1[0] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[5] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[2] + "</td>" + "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>" + "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>" + "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[4] + "</td>" + "<td><a class='remove' href='#'>X</a></td></tr>"
+        //);
 
 
-            $.publish('/regenerate-list/', []);
+        $.publish('/regenerate-list/', []);
 
-            // Hide the new list, then fade it in for effects
-            $("#guest-" + i)
-                .css('display', 'none')
-                .fadeIn();
+        // Hide the new list, then fade it in for effects
+        $("#guest-" + i)
+            .css('display', 'none')
+            .fadeIn();
 
-            // Empty the input field
-            $comment.val("");
-            $size.val("");
-            $no.val("");
-            $name.val("");
-            $time.val("");
+        // Empty the input field
+        $comment.val("");
+        $size.val("");
+        $no.val("");
+        $name.val("");
+        $time.val("");
 
-            localStorage.setItem('guest-counter', i + 1);
-        }
+        localStorage.setItem('guest-counter', i + 1);
+    }
 
 
-    })
-    /*
+})
+
+/*
     $.subscribe('/add/', function() {
 
         i = Number(localStorage.getItem('guest-counter'));
@@ -546,72 +550,74 @@ console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
     });
 */
 
-    var gen;
-    $.subscribe('/remove/', function($this, $msg) {
+var gen;
+$.subscribe('/remove/', function($this, $msg) {
 
-        var parentId = $this.parent().parent().attr('id');
+    var parentId = $this.parent().parent().attr('id');
 
-        // Remove guest list from localStorage based on the id of the clicked parent element    
-        localStorage.removeItem(
-            parentId
-        );
-
-
-        // Syncing stuff
+    // Remove guest list from localStorage based on the id of the clicked parent element    
+    localStorage.removeItem(
+        parentId
+    );
 
 
-        //var index = toSync.indexOf(parentId);
-        //toSync.splice(index, 1);
-        //localStorage.setItem('toSyncArray', toSync.join(','));
-
-        // Fade out the list item then remove from DOM
-        $this.parent().parent().fadeOut(function() {
-            $this.parent().parent().remove();
-
-            $.publish('/regenerate-list/', []);
-        });
+    // Syncing stuff
 
 
-    });
-    
+    //var index = toSync.indexOf(parentId);
+    //toSync.splice(index, 1);
+    //localStorage.setItem('toSyncArray', toSync.join(','));
 
-    $.subscribe('/regenerate-list/', function() {
-        //var $guestItemLi = $('#show-items li');
-        var $guestItemTr = $itemTable.children('tbody').children('tr').has('td');
+    // Fade out the list item then remove from DOM
+    $this.parent().parent().fadeOut(function() {
+        $this.parent().parent().remove();
 
-        // Empty the order array
-        order.length = 0;
-
-        // Go through the list item, grab the ID then push into the array
-        $guestItemTr.each(function() {
-            var id = $(this).attr('id');
-            order.push(id);
-        });
-        // Convert the array into string and save to localStorage
-        localStorage.setItem(
-            'guest-orders', order.join(',')
-        );
-    });
-
-    $.subscribe('/clear-all/', function() {
-        //var $guestListLi = $('#show-items li');
-        var $guestTableTr = $itemTable.children('tbody').children('tr').has('td');
-        order.length = 0;
-        localStorage.clear();
-        //$guestListLi.remove();
-        $guestTableTr.remove();
+        $.publish('/regenerate-list/', []);
     });
 
 
+});
 
+var $guestItemTr;
+$.subscribe('/regenerate-list/', function() {
+    //var $guestItemLi = $('#show-items li');
+    console.log("regenerate-list called");
+    $guestItemTr = $itemTable.children('tbody').children('tr').has('td');
+    console.log($guestItemTr);
 
+    // Empty the order array
+    order.length = 0;
 
-
-
-
-    // Prevent dropdown menu from closing on click any item in the form
-    $('.dropdown-menu').find('form').click(function (e) {
-        e.stopPropagation();
+    // Go through the list item, grab the ID then push into the array
+    $guestItemTr.each(function() {
+        var id = $(this).attr('id');
+        order.push(id);
     });
+    // Convert the array into string and save to localStorage
+    localStorage.setItem(
+        'guest-orders', order.join(',')
+    );
+});
+
+$.subscribe('/clear-all/', function() {
+    //var $guestListLi = $('#show-items li');
+    var $guestTableTr = $itemTable.children('tbody').children('tr').has('td');
+    order.length = 0;
+    localStorage.clear();
+    //$guestListLi.remove();
+    $guestTableTr.remove();
+});
+
+
+
+
+
+
+
+
+// Prevent dropdown menu from closing on click any item in the form
+$('.dropdown-menu').find('form').click(function(e) {
+    e.stopPropagation();
+});
 
 //});

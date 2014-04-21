@@ -112,6 +112,7 @@ function Sync(){
 								if(response == "success"){
 									//sync = true;
 									console.log("ajax success toseat");
+									console.log(localstorage.key(z));
 									var index = seatedToSync.indexOf(localStorage.key(z));
 									console.log(index);
 									console.log(seatedToSync.length);

@@ -37,8 +37,8 @@ function login($email, $password, $mysqli) {
         //$stmt->bind_result($user_id, $username, $db_password, $salt);
         $ans = $stmt->fetchAll();
 		foreach($ans as $answer) {
-        echo "<tr><td>".$answer['id']."</td>";
-        echo "<td>".$answer['password']."</td></tr>";
+        //echo "<tr><td>".$answer['id']."</td>";
+        //echo "<td>".$answer['password']."</td></tr>";
 		$user_id = $answer['id'];
 		$db_password = $answer['password'];
 		$username = $answer['username'];
@@ -62,8 +62,8 @@ function login($email, $password, $mysqli) {
             } else {*/	
                 // Check if the password in the database matches
                 // the password the user submitted.
-				echo "<br/>" .$db_password . "<br/>";
-				echo $password . "<br/>";
+				//echo "<br/>" .$db_password . "<br/>";
+				//echo $password . "<br/>";
                 if ($db_password == $password) {
                     // Password is correct!
 					echo "Correct pass";

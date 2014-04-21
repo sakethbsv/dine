@@ -20,10 +20,10 @@ if(!empty($_POST['number'])){
 if(!empty($_POST['restaurant'])){
 	$restaurant = $_POST['restaurant'];
 }
-echo $restaurant;
-echo $number;
+//echo $restaurant;
+//echo $number;
 $sql_select = "SELECT * FROM dine_tbl1 WHERE number = " . $number . " AND restaurant = '".$restaurant."'";
-echo $sql_select;
+//echo $sql_select;
 
 $stmt = $conn->query($sql_select);
 $registrants = $stmt->fetchAll(); 

@@ -34,7 +34,7 @@ try {
 
     // Insert data
     $sql_update = "UPDATE dine_tbl1 SET seated=1 WHERE number=". $number ." AND restaurant='".$restaurant."' AND date='" . $date . "'";
-	echo $sql_update;
+	//echo $sql_update;
     $stmt = $conn->prepare($sql_update);
     $stmt->execute();
 	echo "success";

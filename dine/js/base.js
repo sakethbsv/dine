@@ -112,8 +112,8 @@ function Sync(){
 								if(response == "success"){
 									//sync = true;
 									console.log("ajax success toseat");
-									console.log(localStorage.key(z));
-									var index = seatedToSync.indexOf(localStorage.key(z));
+									console.log(localStorage.key(z-1));
+									var index = seatedToSync.indexOf(localStorage.key(z-1));
 									console.log(index);
 									console.log(seatedToSync.length);
 									seatedToSync.splice(index, 1);
@@ -121,7 +121,7 @@ function Sync(){
 									localStorage.setItem(
 									   'seatedToSyncArray', seatedToSync.join(',')
 									   );
-									localStorage.removeItem(localStorage.key(z));
+									localStorage.removeItem(localStorage.key(z-1));
 									   
 								}
 								else{

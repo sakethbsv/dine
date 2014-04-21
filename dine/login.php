@@ -17,7 +17,6 @@ if (login_check($mysqli) == true) {
         <link rel="stylesheet" href="styles/main.css" />
         <script type="text/JavaScript" src="js/sha512.js"></script> 
         <script type="text/JavaScript" src="js/forms.js"></script> 
-        <script>alert("works")</script>
     </head>
     <body>
         <?php

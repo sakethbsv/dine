@@ -12,6 +12,9 @@ sec_session_start();
         
     <style type="text/css"></style></head>
     <body>
+    <?php if (login_check($mysqli) == true) : ?>
+                    <p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p><br/>
+
         <h4 style="left:0px">Dine-Services</h4>
         <button id="sync" onClick="Sync()" style="font-size:18px" style="left:0px">Sync</button>
         <div id="time-div" style="position:absolute; font-size:36px; top:20px; right:100px">TIME</div>
@@ -54,7 +57,9 @@ sec_session_start();
         
         <!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
-<script>var username = "html trial";</script>
+<script>
+var username = <?php echo htmlentities($_SESSION['username']); ?>;
+</script>
 <script src="js/jquery-1.4.4.min.js"></script>
         <script src="js/jquery-ui-1.8.7.custom.min.js"></script>
         <script src="js/jquery.inlineedit.js"></script>
@@ -105,4 +110,9 @@ setTimeout("DisplayTime()",60000);
 }
 window.onload=DisplayTime();
 </script>
+<?php else : ?>
+            <p>
+                <span class="error">You are not authorized to access this page.</span> Please <a href="login.php">login</a>.
+            </p>
+<?php endif; ?>
 </body></html>

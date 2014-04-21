@@ -7,6 +7,8 @@ seatedToSync = localStorage.getItem('seatedToSyncArray');
 seatedToSync = seatedToSync ? seatedToSync.split(',') : [];
 console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 
+alert("Hello " + username);
+
 function Notify(notifNum){
 	
 	console.log(notifNum);	

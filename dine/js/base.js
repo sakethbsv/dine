@@ -97,7 +97,7 @@ function Sync(){
 		alert("Seated Database will now sync. Please make sure of internet connection.");
 		for(var z = 0; z < seatedToSync.length; z++){
 			var datarow = localStorage.getItem(seatedToSync[z]).split(",");
-			    console.log(z);
+			var guestnum = z;
 			//alert(datarow[2]);
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
@@ -114,8 +114,8 @@ function Sync(){
 									//sync = true;
 									console.log("ajax success toseat");
 									console.log(z);
-									console.log(localStorage.key(z-1));
-									var index = seatedToSync.indexOf(localStorage.key(z-1));
+									console.log(localStorage.key(guestnum));
+									var index = seatedToSync.indexOf(localStorage.key(guestnum));
 									console.log(index);
 									console.log(seatedToSync.length);
 									seatedToSync.splice(index, 1);
@@ -123,7 +123,7 @@ function Sync(){
 									localStorage.setItem(
 									   'seatedToSyncArray', seatedToSync.join(',')
 									   );
-									localStorage.removeItem(localStorage.key(z-1));
+									localStorage.removeItem(localStorage.key(guestnum));
 									   
 								}
 								else{

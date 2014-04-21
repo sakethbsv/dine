@@ -111,14 +111,17 @@ function Sync(){
 								alert("Response" + response);
 								if(response == "success"){
 									//sync = true;
-									console.log("ajax success");
+									console.log("ajax success toseat");
 									var index = seatedToSync.indexOf(localStorage.key(z));
-									alert(seatedToSync.length);
+									console.log(index);
+									console.log(seatedToSync.length);
 									seatedToSync.splice(index, 1);
-									alert(seatedToSync.length);
+									console.log(seatedToSync.length);
 									localStorage.setItem(
 									   'seatedToSyncArray', seatedToSync.join(',')
 									   );
+									localStorage.removeItem(localStorage.key(z));
+									   
 								}
 								else{
 									console.log(response + "ajax response");

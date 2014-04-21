@@ -7,7 +7,7 @@ seatedToSync = localStorage.getItem('seatedToSyncArray');
 seatedToSync = seatedToSync ? seatedToSync.split(',') : [];
 console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 
-//alert("Hello " + username);
+alert("Hello " + username);
 
 function Notify(notifNum){
 	
@@ -37,9 +37,49 @@ function Notify(notifNum){
 function Seat(num1, date1, d){
 	
 	console.log(num1, date1);	
-	alert("pushing to seated-to-sync from success function " + d);
-	seatedToSync.push("guest-" + d);
-	localStorage.setItem('seatedToSyncArray', seatedToSync.join(','));
+	
+	$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "update.php",
+					data: {
+						number: num1,
+						date: date1,
+						restaurant: username
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							alert("Response" + response);
+							if(response == "success"){
+							alert("ajax success");
+
+		//						sync = true;
+								console.log("ajax success");
+							}
+							else{
+    							alert("Ajax cup and not net cup");
+								console.log(response + "ajax response");
+								alert("pushing to seated-to-sync from success function " + d);
+								seatedToSync.push("guest-" + d);
+								localStorage.setItem(
+         						   'seatedToSyncArray', seatedToSync.join(',')
+     							   );
+								  
+								   
+							}
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("net cup and not ajax cup");
+							console.log("ajax exception");
+							alert("pushing to to-sync from error function " + d);
+							seatedToSync.push("guest-" + (d));
+							localStorage.setItem(
+											   'seatedToSyncArray', seatedToSync.join(',')
+											   );
+						}
+					  
+			    });
 }
 
 function Sync(){
@@ -87,7 +127,10 @@ function Sync(){
 							
 					   }
 			    });
-							
+				
+			
+			
+			
 		}
 	 }
 	 if(seatedToSync.length == 0){
@@ -285,9 +328,57 @@ function Sync(){
 					  
 			    });	
 			
-			alert("pushing to to-sync from success function " + i);
-			toSync.push("guest-" + i);
-			localStorage.setItem('toSyncArray', toSync.join(','));
+			
+				//Adding to cloud
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "add.php",
+					data: {
+						name: $name.val(),
+						number: $no.val(),
+						time: $time.val(),
+						size: $size.val(),
+						comment: $comment.val(),
+						seated: 0,
+						restaurant:username
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							//alert("Response" + response);
+							if(response == "success"){
+							alert("ajax success");
+
+		//						sync = true;
+								console.log("ajax success");
+							}
+							else{
+    							alert("Ajax cup and not net cup");
+								console.log(response + "ajax response");
+								alert("pushing to to-sync from success function " + i);
+								toSync.push("guest-" + i);
+								localStorage.setItem(
+         						   'toSyncArray', toSync.join(',')
+     							   );
+								  
+								   
+							}
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							alert("net cup and not ajax cup");
+							console.log("ajax exception");
+							alert("pushing to to-sync from error function " + i);
+							toSync.push("guest-" + (i));
+							localStorage.setItem(
+											   'toSyncArray', toSync.join(',')
+											   );
+						}
+					  
+			    });
+				
+			
+			
 			
             // Append a new list item with the value of the new guest list
 			data1 = localStorage.getItem("guest-" + i).split(',');
@@ -377,3 +468,4 @@ var gen;
 		$guestTableTr.remove();
     });
 });
+// JavaScript Document

@@ -17,7 +17,11 @@ catch(Exception $e){
 if(!empty($_POST['number'])){
 	$number = $_POST['number'];
 }
-$sql_select = "SELECT * FROM dine_tbl1 WHERE number = " . $number;
+if(!empty($_POST['restaurant'])){
+	$restaurant = $_POST['restaurant'];
+}
+
+$sql_select = "SELECT * FROM dine_tbl1 WHERE number = " . $number . " AND restaurant = ".$restaurant;
 $stmt = $conn->query($sql_select);
 $registrants = $stmt->fetchAll(); 
 $visitCount = count($registrants);

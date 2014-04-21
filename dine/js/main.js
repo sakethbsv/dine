@@ -267,6 +267,14 @@ var i = Number(localStorage.getItem('guest-counter')) + 1,
     dataRow,
     orderList;
 
+
+    // Analytics elements
+    $totalSeated = $('#total-seated');
+    $totalWaiting = $('#total-waiting');
+    $avgWaitCat1 = $('#wait-cat-1');
+    $avgWaitCat2 = $('#wait-cat-2');
+    $avgWaitCat3 = $('#wait-cat-3');
+
 // Load guest list
 orderList = localStorage.getItem('guest-orders');
 console.log(orderList);
@@ -275,21 +283,26 @@ orderList = orderList ? orderList.split(',') : [];
 for (j = 0, k = orderList.length; j < k; j++) {
     console.log(localStorage.getItem(orderList[j]));
     data = localStorage.getItem(orderList[j]).split(',');
-    var arrived = data[5].split(":");
+
+    var arrivedDate = new Date(data[5])
+
     var CurrentDate = new Date();
     var hours = CurrentDate.getHours();
     var minutes = CurrentDate.getMinutes();
-    var waitingMinutes = minutes - Number(arrived[1]);
-    var waitingHours = hours - Number(arrived[0]);
 
-    var wait1 = minutes - Number(arrived[1]);
-    var wait2 = hours - Number(arrived[0]);
+    var waitingMinutes = minutes - Number(arrivedDate.getMinutes());
+    var waitingHours = hours - Number(arrivedDate.getHours());
+
 
     if (waitingMinutes < 0) {
-        wait1 = 60 + wait1;
-        wait2 -= 1;
+        waitingMinutes = 60 + waitingMinutes;
+        waitingHours -= 1;
     }
-    var waited = waitingHours + ":" + waitingMinutes;
+
+    // Generating the string for the arrrived time
+    var arrivedDateString = arrivedDate.toLocaleTimeString().substring(0,5) + arrivedDate.toLocaleTimeString().substring(8,11);
+
+    var waitedTimeString = waitingHours + "hr " + waitingMinutes + 'mins';
 
     dataRow = data;
 
@@ -298,13 +311,26 @@ for (j = 0, k = orderList.length; j < k; j++) {
                             "<td>" + 'status' + "</td>" + // html for the status column
                             "<td>" + dataRow[3] + "</td>" + // size of the party
                             "<td>" + dataRow[0] + "</td>" + // name of the party
-                            "<td>" + dataRow[5] + "</td>" + // arrival time of the party
+                            "<td>" + arrivedDateString + "</td>" + // arrival time of the party
                             "<td>" + dataRow[2] + "</td>" + // quoted time of the party
-                            "<td class=\"waited\">0:0</td>" + // waiting time. Initially 0:0
+                            "<td class=\"waited\">" + waitedTimeString + "</td>" + // waiting time. Initially 0:0
                             "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
                             "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
                             //"<td>" + dataRow[4] + "</td>" +                   // comments
                             "<td><a class='remove' href='#'>X</a></td></tr>";
+
+
+    // Logic for checking if the day has changed to another day i.e if its a new and the local storage has to cleared.
+    // This has to be accompanied by uploading all the contents of the local storage into the database.
+    var isNewDay = ((CurrentDate.getDate() != arrivedDate.getDate()) && (CurrentDate.getTime() > arrivedDate.getTime())) ? 1 : 0;
+
+    // If its a new day upload to server and clear the appendHTMLString
+    
+    // Sync to server code
+    // If failed try again after some time and store all this in some other form of local storage not interrupting the current one
+    
+    // Sync code come here
+    // toAppendHTMLString = isNewDay ? '' : toAppendHTMLString;
 
     $itemTable.children('tbody').append(toAppendHTMLString);
 
@@ -338,18 +364,64 @@ $itemTable.delegate('.notify', 'click', function(e) {
 });
 
 // On clicking the seat button in the table for a party
+
+// We store all the seated people in a localStorage key called guests-seated. Delimiter used is ||
 $itemTable.delegate('.seat', 'click', function(e) {
     var $this = $(this);
     e.preventDefault();
     var Id = $(this).parent().parent().attr('id');
     console.log(Id + 'seating');
     var d = Id.split('-')[1];
-    var data2 = localStorage.getItem(Id).split(',');
-    //Seat(data2[1], data2[6], d);
+
+    // Saketh sync part
+    var dataRowArray = localStorage.getItem(Id).split(',');
+    //Seat(dataRowArray[1], dataRowArray[6], d);
+
+/* if we have to store all the data of a person
+    var currentGuestInfo = Id + ',' + localStorage.getItem(Id);
+
+    var guestsSeated = localStorage.getItem('guests-seated');
+    guestsSeated = guestsSeated ? guestsSeated+'||'+currentGuestInfo : currentGuestInfo;
+    */
+
+    var curGuestId = Id;
+    var guestsSeated = localStorage.getItem('guests-seated');
+    guestsSeated = guestsSeated ? guestsSeated + ',' + curGuestId : curGuestId ;
+
+    localStorage.setItem('guests-seated', guestsSeated);
+    //console.log(guestsSeated);
+
     $this.parent().parent().fadeOut(function() {
         $this.parent().parent().remove();
         $.publish('/regenerate-list/', []);
+        $.publish('/regenerate-stats/', []);
     });
+
+    // Appending the seating time to local Storage
+    var currentTime = new Date()
+    var seatedGuestInfo = localStorage.getItem(curGuestId);
+    seatedGuestInfo += ',' + currentTime.toString();
+
+    localStorage.setItem(curGuestId, seatedGuestInfo);
+/*
+    // Calculating the wait time for the currently seated person and updating the value in local storage
+    var currentTime = new Date()
+    var partyArrivalTime = new Date(localStorage.getItem(Id).split(',')[5]);
+
+    // waiting time in seconds
+    var waitingTime = (currentTime.getTime() - partyArrivalTime.getTime()) / 1000;
+    console.log('waiting time for the seated person is ' + waitingTime);
+
+    var guestWaitTimes = localStorage.getItem('guest-wait-times');
+    // We are going to use the format guestId:waittime;guestId:waittime;.....................
+    //guestWaitTimes = guestWaitTimes ? (guestWaitTimes + ';' + curGuestId + ':' + waitingTime) : (curGuestId + ':' + waitingTime);
+
+    localStorage.setItem('guest-wait-times', guestWaitTimes);
+
+    console.log(guestWaitTimes)
+    */
+
+
 });
 
 // Clear all
@@ -374,10 +446,13 @@ $.subscribe('/add/', function() {
         var d = new Date();
         var $now = d.getHours() + ":" + d.getMinutes();
         var $date = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate()
-        localStorage.setItem(
-            "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
-        );
-
+        
+        //localStorage.setItem(
+        //    "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
+        //);
+        localStorage.setItem("guest-" + i, $name.val() + "," +
+         $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + d.toString());
+        
         // Set the to-do max counter so on page refresh it keeps going up instead of reset
         localStorage.setItem('guest-counter', i);
 
@@ -386,6 +461,9 @@ $.subscribe('/add/', function() {
         // Append a new list item with the value of the new guest list
         dataRow = localStorage.getItem("guest-" + i).split(',');
 
+        var arrivedDate = new Date(dataRow[5])
+        var arrivedDateString = arrivedDate.toLocaleTimeString().substring(0,5) + arrivedDate.toLocaleTimeString().substring(8,11);
+
         console.log("adding table entry")
 
         var toAppendHTMLString = '';
@@ -393,9 +471,9 @@ $.subscribe('/add/', function() {
         "<td>" + 'status' + "</td>" + // html for the status column
         "<td>" + dataRow[3] + "</td>" + // size of the party
         "<td>" + dataRow[0] + "</td>" + // name of the party
-        "<td>" + dataRow[5] + "</td>" + // arrival time of the party
+        "<td>" + arrivedDateString + "</td>" + // arrival time of the party
         "<td>" + dataRow[2] + "</td>" + // quoted time of the party
-        "<td class=\"waited\">0:0</td>" + // waiting time. Initially 0:0
+        "<td class=\"waited\">0hr 0mins</td>" + // waiting time. Initially 0:0
         "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
         "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
         //"<td>" + dataRow[4] + "</td>" +                   // comments
@@ -409,6 +487,7 @@ $.subscribe('/add/', function() {
 
 
         $.publish('/regenerate-list/', []);
+        $.publish('/regenerate-stats/', []);
 
         // Hide the new list, then fade it in for effects
         $("#guest-" + i)
@@ -608,7 +687,71 @@ $.subscribe('/clear-all/', function() {
     $guestTableTr.remove();
 });
 
+$.subscribe('/regenerate-stats/', function() {
+    console.log('regenerating stats...');
 
+    var index;
+    var totalWaiting = 0;
+    var totalSeated = 0;
+
+    var totalWaitCategory1 = 0;     // Category 1 is 1-4 people party
+    var totalWaitCategory2 = 0;     // Category 2 is 5-7 people party
+    var totalWaitCategory3 = 0;     // Category 3 is 7+ people
+
+    var numPartyCategory1 = 0;
+    var numPartyCategory2 = 0;
+    var numPartyCategory3 = 0;
+
+    var orderList = localStorage.getItem('guest-orders');
+    orderList = orderList ? orderList.split(',') : [];
+
+    var seatedList = localStorage.getItem('guests-seated');
+    seatedList = seatedList ? seatedList.split(',') : [];
+
+    for (index = 0; index < orderList.length; index++) {
+        var numPeopleInParty = Number(localStorage.getItem(orderList[index]).split(',')[3]);
+        totalWaiting += numPeopleInParty;
+    }
+
+    for (index = 0; index < seatedList.length; index++) {
+        var curItem = localStorage.getItem(seatedList[index]).split(',')
+
+        var numPeopleInSeatedParty = Number(curItem[3]);
+        totalSeated += numPeopleInSeatedParty;
+
+
+        var curId = seatedList[index];     // getting the id of the person who finished waiting
+        var arrivedTime = new Date(curItem[5]);
+        var seatedTime = new Date(curItem[6]);
+        var waitedTime = (seatedTime.getTime() - arrivedTime.getTime())/1000
+
+        if (numPeopleInSeatedParty >= 1 && numPeopleInSeatedParty <= 4) {
+            totalWaitCategory1 += waitedTime;
+            numPartyCategory1 += 1;
+        }
+        else if (numPeopleInSeatedParty >= 5 && numPeopleInSeatedParty <= 7) {
+            totalWaitCategory2 += waitedTime;
+            numPartyCategory2 += 1;
+        }
+        else if (numPeopleInSeatedParty >= 7) {
+            totalWaitCategory3 += waitedTime;
+            numPartyCategory3 += 1;
+        }
+    };
+
+    console.log('total waiting = ' + totalWaiting);
+    console.log('number seated = ' + totalSeated);
+    console.log('totalWaiting in Category1 = ' + totalWaitCategory1);
+
+    $totalSeated.html(totalSeated);
+    $totalWaiting.html(totalWaiting);
+
+    $avgWaitCat1.html(parseInt(totalWaitCategory1/numPartyCategory1/60));
+    $avgWaitCat2.html(parseInt(totalWaitCategory2/numPartyCategory1/60));
+    $avgWaitCat3.html(parseInt(totalWaitCategory3/numPartyCategory1/60));
+})
+
+$.publish('/regenerate-stats/', []);
 
 
 
@@ -621,3 +764,13 @@ $('.dropdown-menu').find('form').click(function(e) {
 });
 
 //});
+
+
+
+
+
+/* Notes for today
+
+fix arrived time
+
+*/

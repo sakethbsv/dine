@@ -25,18 +25,14 @@ function sec_session_start() {
 }
 
 function login($email, $password, $mysqli) {
-	echo "login function";
     // Using prepared statements means that SQL injection is not possible. 
 	try{
-		echo "ok4";
     if ($stmt = $mysqli->prepare("SELECT TOP 1 id, username, password, salt FROM members WHERE email = '" . $email . "'")) {
 	    //$stmt->bindValue(1, $email);
 
         //$stmt->bindValue(1, $email);  // Bind "$email" to parameter.
         $stmt->execute();    // Execute the prepared query.
-		echo "ok10";
         //$stmt->store_result();
- 		echo "ok5";
         // get variables from result.
         //$stmt->bind_result($user_id, $username, $db_password, $salt);
         $ans = $stmt->fetchAll();
@@ -89,7 +85,6 @@ function login($email, $password, $mysqli) {
                 } else {
                     // Password is not correct
                     // We record this attempt in the database
-					echo "Login fail 1";
                     $now = time();
                     $mysqli->query("INSERT INTO login_attempts(user_id, time)
                                     VALUES ('$user_id', '$now')");

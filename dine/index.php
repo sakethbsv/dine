@@ -58,7 +58,7 @@ sec_session_start();
         <!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
 <script>
-var username = <?php echo htmlentities($_SESSION['username']); ?>;
+var username = "<?php echo htmlentities($_SESSION['username']); ?>";
 </script>
 <script src="js/jquery-1.4.4.min.js"></script>
         <script src="js/jquery-ui-1.8.7.custom.min.js"></script>

@@ -565,7 +565,7 @@ $.subscribe('/add/', function() {
         // Take the value of the input field and save it to localStorage
         var d = new Date();
         var $now = d.getHours() + ":" + d.getMinutes();
-        var $date = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate()
+        var $date = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate()
 
         //localStorage.setItem(
         //    "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date

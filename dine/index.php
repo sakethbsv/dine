@@ -1,3 +1,9 @@
+<?php
+include_once 'db_connect.php';
+include_once 'functions.php';
+ 
+sec_session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +26,8 @@
 </head>
 
 <body>
+<?php if (login_check($mysqli) == true) : ?>
+                    <p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p><br/>
     <div id="wrap">
         <div class="container-fluid" style="margin-top:0px">
 
@@ -30,10 +38,11 @@
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-align-justify"></span>
                         </button>
+
                         <ul class="dropdown-menu" role="menu">
                             <li class="disabled"><a href="#">Current Waitlist</a>
                             </li>
-                            <li><a href="#">History</a>
+                            <li><a href="#" onClick="Sync()">Sync</a>
                             </li>
                             <li><a href="#">Account Settings</a>
                             </li>
@@ -153,6 +162,9 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script-->
     <!--script src="js/jquery-2.1.0.min.js"></script-->
+    <script>
+	 var username = "<?php echo htmlentities($_SESSION['username']); ?>";
+    </script>
     <script src="js/jquery-1.4.4.min.js"></script>
     <script src="js/jquery.inlineedit.js"></script>
     <script src="js/jquery-ui-1.8.7.custom.min.js"></script>
@@ -165,6 +177,11 @@
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <?php else : ?>
+            <p>
+                <span class="error">You are not authorized to access this page.</span> Please <a href="login.php">login</a>.
+            </p>
+    <?php endif; ?>
 </body>
 
 </html>

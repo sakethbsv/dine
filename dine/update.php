@@ -19,6 +19,9 @@ if(!empty($_POST['number'])){
 if(!empty($_POST['date'])){
 	$date = $_POST['date'];
 }
+if(!empty($_POST['restaurant'])){
+	$restaurant = $_POST['restaurant'];
+}
 
 //echo $number;
 //echo $date;
@@ -30,8 +33,9 @@ try {
 	//echo $date;
 
     // Insert data
-    $sql_insert = "UPDATE dine_tbl1 SET seated=1 WHERE number=". $number ." AND date='" . $date . "'";
-    $stmt = $conn->prepare($sql_insert);
+    $sql_update = "UPDATE dine_tbl1 SET seated=1 WHERE number=". $number ." AND restaurant='".$restaurant."' AND date='" . $date . "'";
+	//echo $sql_update;
+    $stmt = $conn->prepare($sql_update);
     $stmt->execute();
 	echo "success";
 }

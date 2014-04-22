@@ -245,7 +245,143 @@ seatedToSync = localStorage.getItem('seatedToSyncArray');
 seatedToSync = seatedToSync ? seatedToSync.split(',') : [];
 console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 
+function Notify(notifNum){
+	
+	console.log(notifNum);	
+	//https://control.msg91.com/api/sendhttp.php?authkey=65373Aur7ub23VBi533913dd&mobiles=9840346380&message=Your%20table%20is%20now%20ready&sender=DINEIN&route=4	
+	
+	$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "notify.php",
+					data: {
+						number: notifNum
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+								console.log("Response for msg sending" + response);
+								
+					  },
+					 error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							console.log("Ajax cup for senging msg");
+							console.log("ajax exception");
+							
+					   }
+			    });
+}
 
+
+function Seat(num1, date1, d){
+	
+	console.log(num1, date1);	
+	console.log("pushing to seated-to-sync from success function " + d);
+	seatedToSync.push("guest-" + d);
+	localStorage.setItem('seatedToSyncArray', seatedToSync.join(','));
+}
+
+function Sync(){
+	  alert("Syncing");
+	 if(toSync.length == 0){
+		console.log("Database is synced on cloud completely"); 
+	 }
+	 else{
+		console.log("Database will now sync. Please make sure of internet connection.");
+		for(var z = 0; z < toSync.length; z++){
+			var datarow = localStorage.getItem(toSync[z]).split(",");
+			//console.log(datarow[2]);
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "add.php",
+					data: {
+						name: datarow[0],
+						number: datarow[1],
+						time: datarow[2],
+						size: datarow[3],
+						comment: datarow[4],
+						restaurant:username
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+								console.log("Response" + response);
+								if(response == "success"){
+									//sync = true;
+									console.log("ajax success");
+									var index = toSync.indexOf(localStorage.key(z));
+									toSync.splice(index, 1);
+									localStorage.setItem(
+									   'toSyncArray', toSync.join(',')
+									   );
+								}
+								else{
+									console.log(response + "ajax response");
+									
+								}
+					  },
+					  error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							console.log("Ajax cup");
+							console.log("ajax exception");
+							
+					   }
+			    });
+							
+		}
+	 }
+	 if(seatedToSync.length == 0){
+		console.log("Seated Database is synced on cloud completely"); 
+	 }
+	 else{
+		console.log("Seated Database will now sync. Please make sure of internet connection.");
+		for(var z = 0; z < seatedToSync.length; z++){
+			var datarow = localStorage.getItem(seatedToSync[z]).split(",");
+			var guestnum = z;
+			//console.log(datarow[2]);
+				$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "update.php",
+					data: {
+						number: datarow[1],
+						date: datarow[6],
+						restaurant:username
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+								console.log("Response" + response);
+								if(response == "success"){
+									//sync = true;
+									console.log("ajax success toseat");
+									console.log(z);
+									console.log(localStorage.key(guestnum));
+									var index = seatedToSync.indexOf(localStorage.key(guestnum));
+									console.log(index);
+									console.log(seatedToSync.length);
+									seatedToSync.splice(index, 1);
+									console.log(seatedToSync.length);
+									localStorage.setItem(
+									   'seatedToSyncArray', seatedToSync.join(',')
+									   );
+									localStorage.removeItem(localStorage.key(guestnum));
+									   
+								}
+								else{
+									console.log(response + "ajax response");
+									
+								}
+					  },
+					  error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							console.log("Ajax cup");
+							console.log("ajax exception");
+							
+					   }
+			    });
+				
+			
+			
+			
+		}
+	 }
+}
 /*$(document).ready(function() {*/
 
 
@@ -265,6 +401,7 @@ var i = Number(localStorage.getItem('guest-counter')) + 1,
     order = [], // Order of the parties
     data,
     dataRow,
+    data1,
     orderList;
 
 
@@ -362,13 +499,14 @@ $itemTable.delegate('.remove', 'click', function(e) {
 
 // On clicking the notify button in the table for a party
 $itemTable.delegate('.notify', 'click', function(e) {
-    var $this = $(this);
-    e.preventDefault();
-    var notifyId = $(this).parent().parent().attr('id');
-    console.log(notifyId + 'notifying');
-    var data2 = localStorage.getItem(notifyId).split(',');
-    //Notify(data2[1]);
-});
+        var $this = $(this);
+        e.preventDefault();
+        var notifyId = $(this).parent().parent().attr('id');
+		console.log(notifyId + 'notifying');
+		var data2 = localStorage.getItem(notifyId).split(',');
+  		//	Notify(data2[1]);
+    });
+
 
 // On clicking the seat button in the table for a party
 
@@ -382,7 +520,7 @@ $itemTable.delegate('.seat', 'click', function(e) {
 
     // Saketh sync part
     var dataRowArray = localStorage.getItem(Id).split(',');
-    //Seat(dataRowArray[1], dataRowArray[6], d);
+    Seat(dataRowArray[1], dataRowArray[6], d);
 
     var curGuestId = Id;
     var guestsSeated = localStorage.getItem('guests-seated');
@@ -433,11 +571,40 @@ $.subscribe('/add/', function() {
         //    "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
         //);
         localStorage.setItem("guest-" + i, $name.val() + "," +
-            $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + d.toString());
+            $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + d.toString() + "," + $date);
 
         // Set the to-do max counter so on page refresh it keeps going up instead of reset
         localStorage.setItem('guest-counter', i);
 
+			//Getting previous visits
+			$.ajax({ //create an ajax request to load_page.php
+					type: "POST",
+					url: "check.php",
+					data: {						
+						number: $no.val(),
+						restaurant: username						
+					},
+					dataType: "html", //expect html to be returned                
+					success: function (response) {
+							//console.log("Response" + response);
+							console.log('Previous Visits');
+							
+							alert(response + "Response for prev visits");
+					},
+					
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+     
+							console.log("net cup and not ajax cup");
+							console.log("ajax exception" + textStatus + errorThrown);
+							console.log("Unable to get previous visits");
+							
+						}
+					  
+			    });	
+			
+			console.log("pushing to to-sync from success function " + i);
+			toSync.push("guest-" + i);
+			localStorage.setItem('toSyncArray', toSync.join(','));
 
 
         // Append a new list item with the value of the new guest list
@@ -630,7 +797,10 @@ $.subscribe('/remove/', function($this, $msg) {
         parentId
     );
 
-
+	var index = toSync.indexOf(parentId);
+		//console.log(index + "index");
+	toSync.splice(index, 1);	
+	localStorage.setItem('toSyncArray', toSync.join(','));
     // Syncing stuff
 
 

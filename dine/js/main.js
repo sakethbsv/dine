@@ -1,241 +1,42 @@
 /*
-var i = Number(localStorage.getItem('todo-counter')) + 1,
-    $form = $('#party-form'),
-    $partyPhone = $('#party-phone')
-    $partyName = $('#party-name'),
-    $partySize = $('#party-size'),
-    $partyNotes = $('#party-notes'),
-    $partyWaitTime = $('#party-wait-time');
 
+Add all To-do's here:
 
+Saketh:
+1. Add a timeout to sync data every hour for the timebeing
+2. Remove redundant data being stored
+3. Keep the database storage space to minimum, and not overuse it
+4. Help pavan with some of the front-end wrk.
+5. Add even seated time stamp to the database when you are making seated value true for a guest while syncing.
+6. Change add.php such that even time of adding is sent to it, not created dynamically since we have no idea when the data is syncing.
 
-$form.submit(function(e) {
-    e.preventDefault();
-    $.publish('/add/', []);
-})
+Pavan:
+1. Waiting time when exceeding quoted time turns red.
+2. Present the data which is shown on addition of a guest in an alert box with proper UI. Make sure when you present the above thing, you
+take the diner's number of visits from the received data, decide his status and put up an appropriate color in the status box. Also, use this 
+data to show a popup which says this guy deserves a free mocktail (when fr eg. u realize he has visited for the 5th time). This is customizable based
+on needs of the restaurant.
+3. Improve UI of login page (login.php), add a link to log out page on index.php (logout.php).
+4. On click of a customer's name, make his details appear on screen so that the restaurant people can check the number and name and call him up. Saketh will add
+the ability to check his past visits also on click later.
+5. Add the meta data that allows pinning the app to home screen of ipad.
+6. Check if all animations, transitions etc are smooth on ipad. Also check for accessibility of all options.
 
-var affirmFormData = function() {
-    var i = 0;
-    var flag = 1;
-    for (i = 0; i < arguments.length; i++){
-        console.log(arguments[i].val());
-        if (arguments[i].val() == "")
-            flag = 0;
-    }
-    return flag;
-}
+Avinash:
+Create an analytics page that offers analytics week;y/monthly for various stats and stuff.
+Get the 6 months code from aditya and use
 
+Bracket, Avinash:
+BizApark enrollment
+B-Plan creation for competitions
 
-$.subscribe('/add/', function() {
-    // Test if the form has good data
-    var isGood = affirmFormData($partyPhone, $partyName, $partySize, $partyWaitTime);
-    console.log('isGood is ' + isGood);
+Bracket + any 1 of the rest acc to who is free:
+Meet cream center, mainland china guy and convince them with starting the trial.
 
-    // Take the value of the input field and save it to localStorage        
-    if (isGood) {
-        localStorage.setItem(
-            "party-" + i, $partyName.val() + "," + $partyPhone.val() + "," + $partySize.val() + "," + $partyWaitTime.val()
-            )
-    }
-
-    // Set the to-do max counter so on page refresh it keeps going up instead of reset
-    localStorage.setItem('party-counter', i);
-
-
-
-        if ($newTodo.val() !== "") {
-            // Take the value of the input field and save it to localStorage
-            localStorage.setItem( 
-                "todo-" + i, $newTodo.val() 
-            );
-             
-            // Set the to-do max counter so on page refresh it keeps going up instead of reset
-            localStorage.setItem('todo-counter', i);
-             
-            // Append a new list item with the value of the new todo list
-            $itemList.append(
-                "<li id='todo-" + i + "'>"
-                + "<span class='editable'>"
-                + localStorage.getItem("todo-" + i) 
-                + " </span><a href='#'>x</a></li>"
-            );
- 
-            $.publish('/regenerate-list/', []);
- 
-            // Hide the new list, then fade it in for effects
-            $("#todo-" + i)
-                .css('display', 'none')
-                .fadeIn();
-             
-            // Empty the input field
-            $newTodo.val("");
-             
-            i++;
-        }
-    });
 */
 
-
-
-
-
-
-
-
-
-/*
-$(function() {
-    var i = Number(localStorage.getItem('todo-counter')) + 1,
-        j = 0,
-        k,
-        $form = $('#todo-form'),
-        $removeLink = $('#show-items li a'),
-        $itemList = $('#show-items'),
-        $editable = $('.editable'),
-        $clearAll = $('#clear-all'),
-        $newTodo = $('#todo'),
-        order = [],
-        orderList;
- 
-    // Load todo list
-    orderList = localStorage.getItem('todo-orders');
-     
-    orderList = orderList ? orderList.split(',') : [];
-     
-    for( j = 0, k = orderList.length; j < k; j++) {
-        $itemList.append(
-            "<li id='" + orderList[j] + "'>"
-            + "<span class='editable'>"
-            + localStorage.getItem(orderList[j]) 
-            + "</span> <a href='#'>X</a></li>"
-        );
-    }
-         
-    // Add todo
-    $form.submit(function(e) {
-        e.preventDefault();
-        $.publish('/add/', []);
-    });
- 
-    // Remove todo
-    $itemList.delegate('a', 'click', function(e) {
-        var $this = $(this);
-         
-        e.preventDefault();
-        $.publish('/remove/', [$this]);
-    });
-     
-    // Sort todo
-    $itemList.sortable({
-        revert: true,
-        stop: function() {
-            $.publish('/regenerate-list/', []);
-        }
-    });
-     
-    // Edit and save todo
-    $editable.inlineEdit({
-        save: function(e, data) {
-                var $this = $(this);
-                localStorage.setItem(
-                    $this.parent().attr("id"), data.value
-                );
-            }
-    });
- 
-    // Clear all
-    $clearAll.click(function(e) {
-        e.preventDefault();
-        $.publish('/clear-all/', []);
-    });
- 
-    // Fade In and Fade Out the Remove link on hover
-    $itemList.delegate('li', 'mouseover mouseout', function(event) {
-        var $this = $(this).find('a');
-         
-        if(event.type === 'mouseover') {
-            $this.stop(true, true).fadeIn();
-        } else {
-            $this.stop(true, true).fadeOut();
-        }
-    });
-         
-    // Subscribes
-    $.subscribe('/add/', function() {
-        if ($newTodo.val() !== "") {
-            // Take the value of the input field and save it to localStorage
-            localStorage.setItem( 
-                "todo-" + i, $newTodo.val() 
-            );
-             
-            // Set the to-do max counter so on page refresh it keeps going up instead of reset
-            localStorage.setItem('todo-counter', i);
-             
-            // Append a new list item with the value of the new todo list
-            $itemList.append(
-                "<li id='todo-" + i + "'>"
-                + "<span class='editable'>"
-                + localStorage.getItem("todo-" + i) 
-                + " </span><a href='#'>x</a></li>"
-            );
- 
-            $.publish('/regenerate-list/', []);
- 
-            // Hide the new list, then fade it in for effects
-            $("#todo-" + i)
-                .css('display', 'none')
-                .fadeIn();
-             
-            // Empty the input field
-            $newTodo.val("");
-             
-            i++;
-        }
-    });
-     
-    $.subscribe('/remove/', function($this) {
-        var parentId = $this.parent().attr('id');
-         
-        // Remove todo list from localStorage based on the id of the clicked parent element
-        localStorage.removeItem(
-            "'" + parentId + "'"
-        );
-         
-        // Fade out the list item then remove from DOM
-        $this.parent().fadeOut(function() { 
-            $this.parent().remove();
-             
-            $.publish('/regenerate-list/', []);
-        });
-    });
-     
-    $.subscribe('/regenerate-list/', function() {
-        var $todoItemLi = $('#show-items li');
-        // Empty the order array
-        order.length = 0;
-         
-        // Go through the list item, grab the ID then push into the array
-        $todoItemLi.each(function() {
-            var id = $(this).attr('id');
-            order.push(id);
-        });
-         
-        // Convert the array into string and save to localStorage
-        localStorage.setItem(
-            'todo-orders', order.join(',')
-        );
-    });
-     
-    $.subscribe('/clear-all/', function() {
-        var $todoListLi = $('#show-items li');
-         
-        order.length = 0;
-        localStorage.clear();
-        $todoListLi.remove();
-    });
-});
-*/
-
+//toSync array is to keep track of guest added to list but not synced to cloud.
+//seatedToSync array is to keep track of guest who are seated. Presently redundant with guests-seated array created by pavan
 var toSync = [];
 var seatedToSync = [];
 toSync = localStorage.getItem('toSyncArray');
@@ -245,142 +46,140 @@ seatedToSync = localStorage.getItem('seatedToSyncArray');
 seatedToSync = seatedToSync ? seatedToSync.split(',') : [];
 console.log(seatedToSync + " seatedToSyncArrayfromlocalDB");
 
-function Notify(notifNum){
-	
-	console.log(notifNum);	
-	//https://control.msg91.com/api/sendhttp.php?authkey=65373Aur7ub23VBi533913dd&mobiles=9840346380&message=Your%20table%20is%20now%20ready&sender=DINEIN&route=4	
-	
-	$.ajax({ //create an ajax request to load_page.php
-					type: "POST",
-					url: "notify.php",
-					data: {
-						number: notifNum
-					},
-					dataType: "html", //expect html to be returned                
-					success: function (response) {
-								console.log("Response for msg sending" + response);
-								
-					  },
-					 error: function(XMLHttpRequest, textStatus, errorThrown) {
-     
-							console.log("Ajax cup for senging msg");
-							console.log("ajax exception");
-							
-					   }
-			    });
+function Notify(notifNum) {
+
+    console.log(notifNum);
+    //https://control.msg91.com/api/sendhttp.php?authkey=65373Aur7ub23VBi533913dd&mobiles=9840346380&message=Your%20table%20is%20now%20ready&sender=DINEIN&route=4  
+
+    $.ajax({ //create an ajax request to notify.php to send message to the guest
+        type: "POST",
+        url: "notify.php",
+        data: {
+            number: notifNum
+        },
+        dataType: "html", //expect html to be returned                
+        success: function(response) {
+            console.log("Response for msg sending" + response);
+
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+            console.log("Ajax cup for senging msg");
+            console.log("ajax exception");
+
+        }
+    });
 }
 
 
-function Seat(num1, date1, d){
-	
-	console.log(num1, date1);	
-	console.log("pushing to seated-to-sync from success function " + d);
-	seatedToSync.push("guest-" + d);
-	localStorage.setItem('seatedToSyncArray', seatedToSync.join(','));
+function Seat(num1, date1, d) {
+    //Basically pushes to seatedToSync to sync to db later abt person being seated.
+    console.log(num1, date1);
+    console.log("pushing to seated-to-sync from success function " + d);
+    seatedToSync.push("guest-" + d);
+    localStorage.setItem('seatedToSyncArray', seatedToSync.join(','));
 }
 
-function Sync(){
-	  alert("Syncing");
-	 if(toSync.length == 0){
-		console.log("Database is synced on cloud completely"); 
-	 }
-	 else{
-		console.log("Database will now sync. Please make sure of internet connection.");
-		for(var z = 0; z < toSync.length; z++){
-			var datarow = localStorage.getItem(toSync[z]).split(",");
-			//console.log(datarow[2]);
-				$.ajax({ //create an ajax request to load_page.php
-					type: "POST",
-					url: "add.php",
-					data: {
-						name: datarow[0],
-						number: datarow[1],
-						time: datarow[2],
-						size: datarow[3],
-						comment: datarow[4],
-						restaurant:username
-					},
-					dataType: "html", //expect html to be returned                
-					success: function (response) {
-								console.log("Response" + response);
-								if(response == "success"){
-									//sync = true;
-									console.log("ajax success");
-									var index = toSync.indexOf(localStorage.key(z));
-									toSync.splice(index, 1);
-									localStorage.setItem(
-									   'toSyncArray', toSync.join(',')
-									   );
-								}
-								else{
-									console.log(response + "ajax response");
-									
-								}
-					  },
-					  error: function(XMLHttpRequest, textStatus, errorThrown) {
-     
-							console.log("Ajax cup");
-							console.log("ajax exception");
-							
-					   }
-			    });
-							
-		}
-	 }
-	 if(seatedToSync.length == 0){
-		console.log("Seated Database is synced on cloud completely"); 
-	 }
-	 else{
-		console.log("Seated Database will now sync. Please make sure of internet connection.");
-		for(var z = 0; z < seatedToSync.length; z++){
-			var datarow = localStorage.getItem(seatedToSync[z]).split(",");
-			var guestnum = z;
-			console.log(datarow[1], datarow[6], username);
-				$.ajax({ //create an ajax request to load_page.php
-					type: "POST",
-					url: "update.php",
-					data: {
-						number: datarow[1],
-						date: datarow[6],
-						restaurant:username
-					},
-					dataType: "html", //expect html to be returned                
-					success: function (response) {
-								console.log("Response" + response);
-								if(response == "success"){
-									//sync = true;
-									console.log("ajax success toseat");
-									console.log(z);
-									console.log(localStorage.key(guestnum));
-									var index = seatedToSync.indexOf(localStorage.key(guestnum));
-									console.log(index);
-									console.log(seatedToSync.length);
-									seatedToSync.splice(index, 1);
-									console.log(seatedToSync.length);
-									localStorage.setItem(
-									   'seatedToSyncArray', seatedToSync.join(',')
-									   );
-									localStorage.removeItem(localStorage.key(guestnum));
-									   
-								}
-								else{
-									console.log(response + "ajax response");
-									
-								}
-					  },
-					  error: function(XMLHttpRequest, textStatus, errorThrown) {
-     
-							console.log("Ajax cup");
-							console.log("ajax exception");
-							
-					   }
-			    });
-				
-			
-			
-			
-		}
-	 }
+function Sync() {
+    alert("Syncing");
+    if (toSync.length == 0) {
+        console.log("Database is synced on cloud completely");
+    } else {
+        console.log("Database will now sync. Please make sure of internet connection.");
+        //Goes thru each item in toSync array and syncs with cloud
+        for (var z = 0; z < toSync.length; z++) {
+            var datarow = localStorage.getItem(toSync[z]).split(",");
+            //console.log(datarow[2]);
+            $.ajax({ //create an ajax request to add.php to add a new guest to the diner_tbl1 table
+                type: "POST",
+                url: "add.php",
+                data: {
+                    name: datarow[0],
+                    number: datarow[1],
+                    time: datarow[2],
+                    size: datarow[3],
+                    comment: datarow[4],
+                    restaurant: username
+                },
+                dataType: "html", //expect html to be returned                
+                success: function(response) {
+                    console.log("Response" + response);
+                    if (response == "success") {
+                        //sync = true;
+                        console.log("ajax success");
+                        var index = toSync.indexOf(localStorage.key(z));
+                        toSync.splice(index, 1);
+                        localStorage.setItem(
+                            'toSyncArray', toSync.join(',')
+                        );
+                    } else {
+                        console.log(response + "ajax response");
+
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                    console.log("Ajax cup");
+                    console.log("ajax exception");
+
+                }
+            });
+
+        }
+    }
+    if (seatedToSync.length == 0) {
+        console.log("Seated Database is synced on cloud completely");
+    } else {
+        console.log("Seated Database will now sync. Please make sure of internet connection.");
+        //Changes seated value to true for each guest loggen in seatedToSync array
+        for (var z = 0; z < seatedToSync.length; z++) {
+            var datarow = localStorage.getItem(seatedToSync[z]).split(",");
+            var guestnum = z;
+            console.log(datarow[1], datarow[6], username);
+            $.ajax({ //create an ajax request to update.php to change seated to true in cloud
+                type: "POST",
+                url: "update.php",
+                data: {
+                    number: datarow[1],
+                    date: datarow[6],
+                    restaurant: username
+                },
+                dataType: "html", //expect html to be returned                
+                success: function(response) {
+                    console.log("Response" + response);
+                    if (response == "success") {
+                        //sync = true;
+                        console.log("ajax success toseat");
+                        console.log(z);
+                        console.log(localStorage.key(guestnum));
+                        var index = seatedToSync.indexOf(localStorage.key(guestnum));
+                        console.log(index);
+                        console.log(seatedToSync.length);
+                        seatedToSync.splice(index, 1);
+                        console.log(seatedToSync.length);
+                        localStorage.setItem(
+                            'seatedToSyncArray', seatedToSync.join(',')
+                        );
+                        localStorage.removeItem(localStorage.key(guestnum));
+
+                    } else {
+                        console.log(response + "ajax response");
+
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                    console.log("Ajax cup");
+                    console.log("ajax exception");
+
+                }
+            });
+
+
+
+
+        }
+    }
 }
 /*$(document).ready(function() {*/
 
@@ -499,13 +298,13 @@ $itemTable.delegate('.remove', 'click', function(e) {
 
 // On clicking the notify button in the table for a party
 $itemTable.delegate('.notify', 'click', function(e) {
-        var $this = $(this);
-        e.preventDefault();
-        var notifyId = $(this).parent().parent().attr('id');
-		console.log(notifyId + 'notifying');
-		var data2 = localStorage.getItem(notifyId).split(',');
-  		//	Notify(data2[1]);
-    });
+    var $this = $(this);
+    e.preventDefault();
+    var notifyId = $(this).parent().parent().attr('id');
+    console.log(notifyId + 'notifying');
+    var data2 = localStorage.getItem(notifyId).split(',');
+    //  Notify(data2[1]);
+});
 
 
 // On clicking the seat button in the table for a party
@@ -565,7 +364,7 @@ $.subscribe('/add/', function() {
         // Take the value of the input field and save it to localStorage
         var d = new Date();
         var $now = d.getHours() + ":" + d.getMinutes();
-        var $date = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate()
+        var $date = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
         //localStorage.setItem(
         //    "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
@@ -576,35 +375,35 @@ $.subscribe('/add/', function() {
         // Set the to-do max counter so on page refresh it keeps going up instead of reset
         localStorage.setItem('guest-counter', i);
 
-			//Getting previous visits
-			$.ajax({ //create an ajax request to load_page.php
-					type: "POST",
-					url: "check.php",
-					data: {						
-						number: $no.val(),
-						restaurant: username						
-					},
-					dataType: "html", //expect html to be returned                
-					success: function (response) {
-							//console.log("Response" + response);
-							console.log('Previous Visits');
-							
-							alert(response + "Response for prev visits");
-					},
-					
-					error: function(XMLHttpRequest, textStatus, errorThrown) {
-     
-							console.log("net cup and not ajax cup");
-							console.log("ajax exception" + textStatus + errorThrown);
-							console.log("Unable to get previous visits");
-							
-						}
-					  
-			    });	
-			
-			console.log("pushing to to-sync from success function " + i);
-			toSync.push("guest-" + i);
-			localStorage.setItem('toSyncArray', toSync.join(','));
+        //Getting previous visits
+        $.ajax({ //create an ajax request to load_page.php
+            type: "POST",
+            url: "check.php",
+            data: {
+                number: $no.val(),
+                restaurant: username
+            },
+            dataType: "html", //expect html to be returned                
+            success: function(response) {
+                //console.log("Response" + response);
+                console.log('Previous Visits');
+
+                alert(response + "Response for prev visits");
+            },
+
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                console.log("net cup and not ajax cup");
+                console.log("ajax exception" + textStatus + errorThrown);
+                console.log("Unable to get previous visits");
+
+            }
+
+        });
+
+        console.log("pushing to to-sync from success function " + i);
+        toSync.push("guest-" + i);
+        localStorage.setItem('toSyncArray', toSync.join(','));
 
 
         // Append a new list item with the value of the new guest list
@@ -664,127 +463,6 @@ $.subscribe('/add/', function() {
 
 })
 
-/*
-    $.subscribe('/add/', function() {
-
-        i = Number(localStorage.getItem('guest-counter'));
-
-
-        if ($comment.val() != "") {
-            // Take the value of the input field and save it to localStorage
-            var d = new Date();
-            var $now = d.getHours() + ":" + d.getMinutes();
-            var $date = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate()
-            localStorage.setItem(
-                "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
-            );
-
-            // Set the to-do max counter so on page refresh it keeps going up instead of reset
-            localStorage.setItem('guest-counter', i);
-
-
-            //Getting previous visits
-            $.ajax({ //create an ajax request to load_page.php
-                type: "POST",
-                url: "check.php",
-                data: {
-                    number: $no.val(),
-                },
-                dataType: "html", //expect html to be returned                
-                success: function(response) {
-                    //alert("Response" + response);
-                    alert('Previous Visits');
-
-                    alert(response + "Response for prev visits");
-                },
-
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-                    alert("net cup and not ajax cup");
-                    console.log("ajax exception" + textStatus + errorThrown);
-                    alert("Unable to get previous visits");
-
-                }
-
-            });
-
-
-            //Adding to cloud
-            $.ajax({ //create an ajax request to load_page.php
-                type: "POST",
-                url: "add.php",
-                data: {
-                    name: $name.val(),
-                    number: $no.val(),
-                    time: $time.val(),
-                    size: $size.val(),
-                    comment: $comment.val(),
-                    seated: 0
-                },
-                dataType: "html", //expect html to be returned                
-                success: function(response) {
-                    //alert("Response" + response);
-                    if (response == "success") {
-                        alert("ajax success");
-
-                        //                      sync = true;
-                        console.log("ajax success");
-                    } else {
-                        alert("Ajax cup and not net cup");
-                        console.log(response + "ajax response");
-                        alert("pushing to to-sync from success function " + i);
-                        toSync.push("guest-" + i);
-                        localStorage.setItem(
-                            'toSyncArray', toSync.join(',')
-                        );
-
-
-                    }
-                },
-
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-                    alert("net cup and not ajax cup");
-                    console.log("ajax exception");
-                    alert("pushing to to-sync from error function " + i);
-                    toSync.push("guest-" + (i));
-                    localStorage.setItem(
-                        'toSyncArray', toSync.join(',')
-                    );
-                }
-
-            });
-
-
-
-            // Append a new list item with the value of the new guest list
-            data1 = localStorage.getItem("guest-" + i).split(',');
-
-            console.log("adding table entry")
-            $itemTable.append(
-                " <tr id='guest-" + i + "'>" + "<td>" + data1[3] + "</td> &nbsp;&nbsp;&nbsp;<td>" + data1[0] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[5] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[2] + "</td>" + "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>" + "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>" + "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[4] + "</td>" + "<td><a class='remove' href='#'>X</a></td></tr>"
-            );
-
-
-            $.publish('/regenerate-list/', []);
-
-            // Hide the new list, then fade it in for effects
-            $("#guest-" + i)
-                .css('display', 'none')
-                .fadeIn();
-
-            // Empty the input field
-            $comment.val("");
-            $size.val("");
-            $no.val("");
-            $name.val("");
-            $time.val("");
-
-            localStorage.setItem('guest-counter', i + 1);
-            //i++;
-        }
-    });
-*/
 
 var gen;
 $.subscribe('/remove/', function($this, $msg) {
@@ -797,10 +475,10 @@ $.subscribe('/remove/', function($this, $msg) {
         parentId
     );
 
-	var index = toSync.indexOf(parentId);
-		//console.log(index + "index");
-	toSync.splice(index, 1);	
-	localStorage.setItem('toSyncArray', toSync.join(','));
+    var index = toSync.indexOf(parentId);
+    //console.log(index + "index");
+    toSync.splice(index, 1);
+    localStorage.setItem('toSyncArray', toSync.join(','));
     // Syncing stuff
 
 
@@ -914,24 +592,9 @@ $.subscribe('/regenerate-stats/', function() {
 
 $.publish('/regenerate-stats/', []);
 
-
-
-
-
-
 // Prevent dropdown menu from closing on click any item in the form
 $('.dropdown-menu').find('form').click(function(e) {
     e.stopPropagation();
 });
 
 //});
-
-
-
-
-
-/* Notes for today
-
-fix arrived time
-
-*/

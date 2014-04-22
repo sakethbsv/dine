@@ -28,14 +28,17 @@ if(!empty($_POST['comment'])){
 if(!empty($_POST['size'])){
 	$size = $_POST['size'];
 }
+if(!empty($_POST['restaurant'])){
+	$restaurant = $_POST['restaurant'];
+}
 
 //if(!empty($_POST)) {
 try {
 
     $date = date("Y-m-d");
     // Insert data
-    $sql_insert = "INSERT INTO dine_tbl1 (name, number, size, time, comment, date, seated) 
-                   VALUES (?,?,?,?,?,?,?)";
+    $sql_insert = "INSERT INTO dine_tbl1 (name, number, size, time, comment, date, seated, restaurant) 
+                   VALUES (?,?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql_insert);
     $stmt->bindValue(1, $name);
     $stmt->bindValue(2, $number);
@@ -44,6 +47,7 @@ try {
     $stmt->bindValue(5, $comment);
     $stmt->bindValue(6, $date);
     $stmt->bindValue(7, 0);
+	$stmt->bindValue(8, $restaurant);
     $stmt->execute();
 	echo "success";
 }

@@ -37,6 +37,20 @@ Meet cream center, mainland china guy and convince them with starting the trial.
 
 //toSync array is to keep track of guest added to list but not synced to cloud.
 //seatedToSync array is to keep track of guest who are seated. Presently redundant with guests-seated array created by pavan
+
+Date.prototype.toHHMM = function() {
+    var hours = (this.getHours() > 12) ? (this.getHours() - 12) : this.getHours();
+    var minutes = this.getMinutes();
+    var ampm = (this.getHours() >= 12) ? 'PM' : 'AM';
+
+    hours = (hours >= 10) ? hours + '' : '0' + hours;
+    minutes = (minutes >= 10) ? minutes + '' : '0' + minutes;
+
+    var dateString = hours + ':' + minutes + ' ' + ampm;
+
+    return dateString;
+}
+
 var toSync = [];
 var seatedToSync = [];
 toSync = localStorage.getItem('toSyncArray');
@@ -226,25 +240,19 @@ for (j = 0, k = orderList.length; j < k; j++) {
     var hours = CurrentDate.getHours();
     var minutes = CurrentDate.getMinutes();
 
-    var waitingMinutes = minutes - Number(arrivedDate.getMinutes());
-    var waitingHours = hours - Number(arrivedDate.getHours());
+    var arrivedTime = arrivedDate;
+    var currentTime = new Date();
+
+    var waitedTime = parseInt(((currentTime.getTime() - arrivedTime.getTime()) / 1000 / 60)) // In minutes
+
+    waitedTime = (waitedTime >= 60) ?
+        (parseInt(waitedTime / 60) + 'hr ' + waitedTime % 60 + 'mins') :
+        (waitedTime + 'mins'); // In standard format 2hr 30mins 
 
 
-    if (waitingMinutes < 0) {
-        waitingMinutes = 60 + waitingMinutes;
-        waitingHours -= 1;
-    }
 
     // Generating the string for the arrrived time
-    var arrivedDateString = arrivedDate.toLocaleTimeString().substring(0, 5) + arrivedDate.toLocaleTimeString().substring(8, 11);
-
-    var arrivedHours = (arrivedDate.getHours() > 12) ? (arrivedDate.getHours() - 12) : arrivedDate.getHours();
-    var arrivedMinutes = arrivedDate.getMinutes();
-    var ampm = (arrivedDate.getHours() >= 12) ? 'PM' : 'AM';
-
-    arrivedDateString = arrivedHours + ':' + arrivedMinutes + ' ' + ampm;
-
-    var waitedTimeString = waitingHours + "hr " + waitingMinutes + 'mins';
+    var arrivedDateString = arrivedDate.toHHMM();
 
     dataRow = data;
 
@@ -255,7 +263,7 @@ for (j = 0, k = orderList.length; j < k; j++) {
     "<td>" + dataRow[0] + "</td>" + // name of the party
     "<td>" + arrivedDateString + "</td>" + // arrival time of the party
     "<td>" + dataRow[2] + "</td>" + // quoted time of the party
-    "<td class=\"waited\">" + waitedTimeString + "</td>" + // waiting time. Initially 0:0
+    "<td class=\"waited\">" + waitedTime + "</td>" + // waiting time. Initially 0:0
     "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
     "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
     //"<td>" + dataRow[4] + "</td>" +                   // comments
@@ -410,13 +418,7 @@ $.subscribe('/add/', function() {
         dataRow = localStorage.getItem("guest-" + i).split(',');
 
         var arrivedDate = new Date(dataRow[5]);
-        var arrivedDateString = arrivedDate.toLocaleTimeString().substring(0, 5) + arrivedDate.toLocaleTimeString().substring(8, 11);
-
-        var arrivedHours = (arrivedDate.getHours() > 12) ? (arrivedDate.getHours() - 12) : arrivedDate.getHours();
-        var arrivedMinutes = arrivedDate.getMinutes();
-        var ampm = (arrivedDate.getHours() >= 12) ? 'PM' : 'AM';
-
-        arrivedDateString = arrivedHours + ':' + arrivedMinutes + ' ' + ampm;
+        var arrivedDateString = arrivedDate.toHHMM();
 
 
 
@@ -479,12 +481,6 @@ $.subscribe('/remove/', function($this, $msg) {
     //console.log(index + "index");
     toSync.splice(index, 1);
     localStorage.setItem('toSyncArray', toSync.join(','));
-    // Syncing stuff
-
-
-    //var index = toSync.indexOf(parentId);
-    //toSync.splice(index, 1);
-    //localStorage.setItem('toSyncArray', toSync.join(','));
 
     // Fade out the list item then remove from DOM
     $this.parent().parent().fadeOut(function() {
@@ -590,7 +586,35 @@ $.subscribe('/regenerate-stats/', function() {
     $avgWaitCat3.html(parseInt(totalWaitCategory3 / numPartyCategory3 / 60));
 })
 
+var gb;
+$.subscribe('/regenerate-wait-times/', function() {
+    var index;
+
+    var orderList = localStorage.getItem('guest-orders');
+    orderList = orderList ? orderList.split(',') : [];
+
+
+    for (index = 0; index < orderList.length; index++) {
+        var curId = orderList[index];
+        var curItem = localStorage.getItem(curId).split(',');
+
+        var arrivedTime = new Date(curItem[5]);
+        var currentTime = new Date();
+        var waitedTime = parseInt(((currentTime.getTime() - arrivedTime.getTime()) / 1000 / 60)) // In minutes
+
+        waitedTime = (waitedTime >= 60) ?
+            (parseInt(waitedTime / 60) + 'hr ' + waitedTime % 60 + 'mins') :
+            (waitedTime + 'mins'); // In standard format 2hr 30mins    
+
+        gb = $('#' + curId);
+        gb = $('#' + curId).children('.waited').html(waitedTime);
+        console.log(waitedTime);
+    }
+})
+
+
 $.publish('/regenerate-stats/', []);
+setInterval(function(){$.publish('/regenerate-wait-times/', []);console.log('internval')}, 60000);
 
 // Prevent dropdown menu from closing on click any item in the form
 $('.dropdown-menu').find('form').click(function(e) {

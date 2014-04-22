@@ -27,7 +27,7 @@ sec_session_start();
 
 <body>
 <?php if (login_check($mysqli) == true) : ?>
-                    <p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p><br/>
+                    
     <div id="wrap">
         <div class="container-fluid" style="margin-top:0px">
 

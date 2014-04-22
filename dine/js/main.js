@@ -335,7 +335,7 @@ function Sync(){
 		for(var z = 0; z < seatedToSync.length; z++){
 			var datarow = localStorage.getItem(seatedToSync[z]).split(",");
 			var guestnum = z;
-			//console.log(datarow[2]);
+			console.log(datarow[1], datarow[6], username);
 				$.ajax({ //create an ajax request to load_page.php
 					type: "POST",
 					url: "update.php",

@@ -47,7 +47,7 @@ sec_session_start();
                             <li><a href="#">Account Settings</a>
                             </li>
                             <li class="divider"></li>
-                            <li><a href="#" style="color:red">Logout</a>
+                            <li><a href="logout.php" style="color:red">Logout</a>
                             </li>
                         </ul>
                     </div>

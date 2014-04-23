@@ -2,12 +2,12 @@
 /**
  * These are the database login details
  */  
-define("HOST", "tcp:d6wfefgfjk.database.windows.net,1433");     // The host you want to connect to.
-define("USER", "saketh@d6wfefgfjk");    // The database username. 
+define("HOST", "tcp:idtjcbmf19.database.windows.net,1433");     // The host you want to connect to.
+define("USER", "saketh@idtjcbmf19");    // The database username. 
 define("PASSWORD", "Ramanamurtybv123");    // The database password. 
 define("DATABASE", "dine");    // The database name.
-$host = "tcp:d6wfefgfjk.database.windows.net,1433";
-$user = "saketh@d6wfefgfjk";
+$host = "tcp:idtjcbmf19.database.windows.net,1433";
+$user = "saketh@idtjcbmf19";
 $pwd = "Ramanamurtybv123";
 $db = "dine";
 define("CAN_REGISTER", "any");

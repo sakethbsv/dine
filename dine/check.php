@@ -1,6 +1,6 @@
 <?php
-$host = "tcp:d6wfefgfjk.database.windows.net,1433";
-$user = "saketh@d6wfefgfjk";
+$host = "tcp:idtjcbmf19.database.windows.net,1433";
+$user = "saketh@idtjcbmf19";
 $pwd = "Ramanamurtybv123";
 $db = "dine";
 // Connect to database.

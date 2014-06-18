@@ -95,7 +95,7 @@ function login($email, $password, $mysqli) {
             //}
         } else {
             // No user exists.
-			echo "No user";
+			echo "<center><p style=\"color:red; margin-top:50px\">No user</p></center>";
             return false;
         }
     }

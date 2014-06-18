@@ -18,23 +18,21 @@ if (login_check($mysqli) == true) {
         <script type="text/JavaScript" src="js/sha512.js"></script> 
         <script type="text/JavaScript" src="js/forms.js"></script> 
     </head>
-    <body><center>
+    <body topmargin="100"><center>
         <?php
         if (isset($_GET['error'])) {
             echo '<p class="error" style="color:red; text-align:center;">Error Logging In!</p>';
         }
         ?> 
-        <div style="background-color:#CCC; top:0px; left:0px; width:inherit; height:200px">
-        <form style="font-size:20px; color:#03F; position:relative; vertical-align:central; top:60px" action="process_login.php" method="post" name="login_form" >                      
+        <form style="font-size:20px; color:#03F" action="process_login.php" method="post" name="login_form" >                      
             Email: <input type="text" name="email" />
             Password: <input type="password" 
                              name="password" 
-                             id="password" onKeyPress="if(event.keyCode == 13) formhash(this.form, this.form.password);"/>
+                             id="password"/>
             <input type="button" 
                    value="Login" 
                    onclick="formhash(this.form, this.form.password);" /> 
         </form>
-        </div>
         <br/><br/>
         <p>If you don't have a login, please <a href="register.php">register</a></p>
         <p>You can logout <a href="logout.php">here</a>.</p>

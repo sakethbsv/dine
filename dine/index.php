@@ -76,7 +76,7 @@ sec_session_start();
                                     <label for="exampleInputSize">Select the Party Size</label>
                                     <select id="party-size" class="form-control">
                                         <option>1</option>
-                                        <option>2</option>
+                                        <option selected="selected">2</option>
                                         <option>3</option>
                                         <option>4</option>
                                         <option>5</option>
@@ -87,7 +87,7 @@ sec_session_start();
                                 <div class="form-group">
                                     <label for="exampleInputSize">Approximate Wait Time</label>
                                     <select id="party-wait-time" class="form-control">
-                                        <option>10 mins</option>
+                                        <option selected="selected">10 mins</option>
                                         <option>15 mins</option>
                                         <option>20 mins</option>
                                         <option>30 mins</option>
@@ -180,9 +180,9 @@ sec_session_start();
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 <?php else : ?>
-    <p>
+    <div style="text-align:center; font-size:25px; position:relative; top:200px">
         <span class="error">You are not authorized to access this page.</span> Please <a href="login.php">login</a>.
-    </p>
+    </div>
 <?php endif; ?>
 </body>
 

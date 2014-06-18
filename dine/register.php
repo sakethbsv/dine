@@ -45,7 +45,8 @@ include_once 'functions.php';
                              id="password"/><br>
             Confirm password: <input type="password" 
                                      name="confirmpwd" 
-                                     id="confirmpwd" /><br>
+                                     id="confirmpwd" onKeypress="if(event.keyCode == 13) return regformhash(this.form, this.form.username, this.form.email, this.form.password,
+                                   this.form.confirmpwd);"/><br>
             <input type="button" 
                    value="Register" 
                    onclick="return regformhash(this.form,

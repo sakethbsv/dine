@@ -5,16 +5,16 @@ include_once 'psl-config.php';
 $error_msg = "";
  
 if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
-	echo $_POST['username'];
-	echo $_POST['email'];
-	echo $_POST['p'];
+	//echo $_POST['username'];
+	//echo $_POST['email'];
+	//echo $_POST['p'];
     // Sanitize and validate the data passed in
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $email = filter_var($email, FILTER_VALIDATE_EMAIL);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         // Not a valid email
-        $error_msg .= '<p class="error">The email address you entered is not valid</p>';
+        $error_msg .= '<p class="error" style="color:red;">The email address you entered is not valid</p>';
     }
  
     $password = filter_input(INPUT_POST, 'p', FILTER_SANITIZE_STRING);
@@ -49,7 +49,7 @@ if (isset($_POST['username'], $_POST['email'], $_POST['p'])) {
     // We'll also have to account for the situation where the user doesn't have
     // rights to do registration, by checking what type of user is attempting to
     // perform the operation.
- 	echo "ok1";
+ 	//echo "ok1";
     if (empty($error_msg)) {
         // Create a random salt
         $random_salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));

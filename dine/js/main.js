@@ -3,12 +3,8 @@
 Add all To-do's here:
 
 Saketh:
-1. Add a timeout to sync data every hour for the timebeing
-2. Remove redundant data being stored
-3. Keep the database storage space to minimum, and not overuse it
-4. Help pavan with some of the front-end wrk.
 5. Add even seated time stamp to the database when you are making seated value true for a guest while syncing.
-6. Change add.php such that even time of adding is sent to it, not created dynamically since we have no idea when the data is syncing.
+6. Change add.php such that even time of adding is sent to it, not created dynamically since we have no idea when the data is syncing i.e also send waiting time mayb
 
 Pavan:
 1. Waiting time when exceeding quoted time turns red.
@@ -16,7 +12,6 @@ Pavan:
 take the diner's number of visits from the received data, decide his status and put up an appropriate color in the status box. Also, use this 
 data to show a popup which says this guy deserves a free mocktail (when fr eg. u realize he has visited for the 5th time). This is customizable based
 on needs of the restaurant.
-3. Improve UI of login page (login.php), add a link to log out page on index.php (logout.php).
 4. On click of a customer's name, make his details appear on screen so that the restaurant people can check the number and name and call him up. Saketh will add
 the ability to check his past visits also on click later.
 5. Add the meta data that allows pinning the app to home screen of ipad.
@@ -24,10 +19,8 @@ the ability to check his past visits also on click later.
 
 Avinash:
 Create an analytics page that offers analytics week;y/monthly for various stats and stuff.
-Get the 6 months code from aditya and use
 
 Bracket, Avinash:
-BizApark enrollment
 B-Plan creation for competitions
 
 Bracket + any 1 of the rest acc to who is free:
@@ -174,7 +167,8 @@ function Sync() {
                         localStorage.setItem(
                             'seatedToSyncArray', seatedToSync.join(',')
                         );
-                        localStorage.removeItem(localStorage.key(guestnum));
+						//Incase you want to clear local storage everytime it syncs
+                        //localStorage.removeItem(localStorage.key(guestnum));
 
                     } else {
                         console.log(response + "ajax response");
@@ -311,7 +305,7 @@ $itemTable.delegate('.notify', 'click', function(e) {
     var notifyId = $(this).parent().parent().attr('id');
     console.log(notifyId + 'notifying');
     var data2 = localStorage.getItem(notifyId).split(',');
-    //  Notify(data2[1]);
+    //Notify(data2[1]);
 });
 
 
@@ -377,12 +371,20 @@ $.subscribe('/add/', function() {
         //localStorage.setItem(
         //    "guest-" + i, $name.val() + "," + $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + $now + "," + $date
         //);
+		try{
         localStorage.setItem("guest-" + i, $name.val() + "," +
             $no.val() + "," + $time.val() + "," + $size.val() + "," + $comment.val() + "," + d.toString() + "," + $date);
 
         // Set the to-do max counter so on page refresh it keeps going up instead of reset
         localStorage.setItem('guest-counter', i);
-
+		}
+		catch(domException) {
+		  if (domException.name === 'QuotaExceededError' ||
+			  domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+			// Fallback code comes here.
+			Alert("LocalStorage Full. Need to sync with server and clear cache.")
+		  }
+		}
         //Getting previous visits
         $.ajax({ //create an ajax request to load_page.php
             type: "POST",
@@ -454,10 +456,10 @@ $.subscribe('/add/', function() {
 
         // Empty the input field
         $comment.val("");
-        $size.val("");
+        //$size.val("");
         $no.val("");
         $name.val("");
-        $time.val("");
+        //$time.val("");
 
         localStorage.setItem('guest-counter', i + 1);
     }
@@ -557,7 +559,7 @@ $.subscribe('/regenerate-stats/', function() {
 
         var curId = seatedList[index]; // getting the id of the person who finished waiting
         var arrivedTime = new Date(curItem[5]);
-        var seatedTime = new Date(curItem[6]);
+        var seatedTime = new Date(curItem[7]);
         var waitedTime = (seatedTime.getTime() - arrivedTime.getTime()) / 1000
 
         if (numPeopleInSeatedParty >= 1 && numPeopleInSeatedParty <= 4) {
@@ -622,3 +624,5 @@ $('.dropdown-menu').find('form').click(function(e) {
 });
 
 //});
+setInterval(function(){Sync()}, 300000);
+

@@ -16,6 +16,7 @@ sec_session_start();
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/popupwindow.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,7 +28,10 @@ sec_session_start();
 
   <body>
     <?php if (login_check($mysqli) == true) : ?>
-    
+    <div id="pop-up-1" class="pop-up-display-content">
+    <h1>Basic</h1>
+    <p>Enim, voluptate, neque facilis incidunt maiores quasi placeat harum itaque ducimus cumque quas expedita hic voluptas culpa error porro qui ullam iste provident mollitia fuga repellat excepturi repellendus earum at sapiente optio dolores ratione totam unde minima quibusdam delectus fugiat nihil nobis inventore dolorum quod. Deserunt, iusto, velit laudantium molestiae laborum neque debitis officia alias cum nulla hic amet consectetur explicabo quod ratione aliquid sed iure minima tempora in tempore maxime fuga quas numquam possimus cumque earum ipsa exercitationem iste.</p>
+    </div>
     <div id="wrap">
         <div class="container-fluid" style="margin-top:0px">
 
@@ -176,6 +180,7 @@ sec_session_start();
     <script src="js/jquery-2.1.0.min.js"></script>
     <script src="js/pubsub.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/popupwindow.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>

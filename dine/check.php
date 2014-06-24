@@ -28,8 +28,9 @@ $sql_select = "SELECT * FROM dine_tbl1 WHERE number = " . $number . " AND restau
 $stmt = $conn->query($sql_select);
 $registrants = $stmt->fetchAll(); 
 $visitCount = count($registrants);
-echo count($registrants) + " Visits";
-if($visitCount > 3) echo "He deserves a loyalty gift";
+echo "<div class=\"popup\">" . count($registrants) . " visits uptil now.</div>";
+if($visitCount > 3) echo "<div class=\"popup\"> He deserves a loyalty gift :)</div>";
+echo '<style>th {width:200px;} .popup {font-size:20px;} </style>';
 if(count($registrants) > 0) {
     echo "<h2>Earlier visits of the customer:</h2>";
     echo "<table>";

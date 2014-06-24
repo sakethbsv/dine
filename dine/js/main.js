@@ -5,6 +5,7 @@ Add all To-do's here:
 Saketh:
 5. Add even seated time stamp to the database when you are making seated value true for a guest while syncing.
 6. Change add.php such that even time of adding is sent to it, not created dynamically since we have no idea when the data is syncing i.e also send waiting time mayb
+7. the status one you should change such that it comes even when opened page freshly.
 
 Pavan:
 1. Waiting time when exceeding quoted time turns red.
@@ -46,6 +47,8 @@ Date.prototype.toHHMM = function() {
 
 var toSync = [];
 var seatedToSync = [];
+var VIP = false;
+var status = "---";
 toSync = localStorage.getItem('toSyncArray');
 toSync = toSync ? toSync.split(',') : [];
 console.log(toSync + " toSyncArrayfromlocalDB");
@@ -397,20 +400,100 @@ $.subscribe('/add/', function() {
             success: function(response) {
                 //console.log("Response" + response);
                 console.log('Previous Visits');
+									console.log("check parse" + response.charAt(19) + response.charAt(20));
 
-                alert(response + "Response for prev visits");
+				if(parseInt(response.charAt(19) + response.charAt(20)) > 3){
+					status = "VIP";
+				}
+				else status = "---";
+				
+				$('#pop-up-1').html(response);
+				$('#pop-up-1').popUpWindow({
+            action: "open",
+            buttons: [{
+                text: "Close",
+                click: function () {
+                    this.close();
+                }
+            }]
+        });
+		
+		console.log("pushing to to-sync from success function " + i);
+        toSync.push("guest-" + i);
+        localStorage.setItem('toSyncArray', toSync.join(','));
+
+
+        // Append a new list item with the value of the new guest list
+        dataRow = localStorage.getItem("guest-" + i).split(',');
+
+        var arrivedDate = new Date(dataRow[5]);
+        var arrivedDateString = arrivedDate.toHHMM();
+
+
+
+        console.log("adding table entry")
+
+        var toAppendHTMLString = '';
+        toAppendHTMLString = "<tr id='guest-" + i + "'>" + // adding the id for the table row
+        "<td>" + status + "</td>" + // html for the status column
+        "<td>" + dataRow[3] + "</td>" + // size of the party
+        "<td>" + dataRow[0] + "</td>" + // name of the party
+        "<td>" + arrivedDateString + "</td>" + // arrival time of the party
+        "<td>" + dataRow[2] + "</td>" + // quoted time of the party
+        "<td class=\"waited\">0hr 0mins</td>" + // waiting time. Initially 0:0
+        "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
+        "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
+        //"<td>" + dataRow[4] + "</td>" +                   // comments
+        "<td><a class='remove' href='#'>X</a></td></tr>";
+
+        $itemTable.children('tbody').append(toAppendHTMLString);
+
+                //alert(response + "Response for prev visits");
             },
 
             error: function(XMLHttpRequest, textStatus, errorThrown) {
 
+			//Check if this is correct when no net is working. I had commented the code below error fn and brought it inside success and error functions.
+
                 console.log("net cup and not ajax cup");
                 console.log("ajax exception" + textStatus + errorThrown);
                 console.log("Unable to get previous visits");
+				alert("Connection to the internet not available");
+				
+				console.log("pushing to to-sync from error function " + i);
+        toSync.push("guest-" + i);
+        localStorage.setItem('toSyncArray', toSync.join(','));
+
+
+        // Append a new list item with the value of the new guest list
+        dataRow = localStorage.getItem("guest-" + i).split(',');
+
+        var arrivedDate = new Date(dataRow[5]);
+        var arrivedDateString = arrivedDate.toHHMM();
+
+
+
+        console.log("adding table entry")
+
+        var toAppendHTMLString = '';
+        toAppendHTMLString = "<tr id='guest-" + i + "'>" + // adding the id for the table row
+        "<td>" + status + "</td>" + // html for the status column
+        "<td>" + dataRow[3] + "</td>" + // size of the party
+        "<td>" + dataRow[0] + "</td>" + // name of the party
+        "<td>" + arrivedDateString + "</td>" + // arrival time of the party
+        "<td>" + dataRow[2] + "</td>" + // quoted time of the party
+        "<td class=\"waited\">0hr 0mins</td>" + // waiting time. Initially 0:0
+        "<td><a class='notify' href='#'>Notify</a></td>" + // notify button
+        "<td><a class='seat' href='#'>Seat</a></td>" + // seat button
+        //"<td>" + dataRow[4] + "</td>" +                   // comments
+        "<td><a class='remove' href='#'>X</a></td></tr>";
+
+        $itemTable.children('tbody').append(toAppendHTMLString);
 
             }
 
         });
-
+/*
         console.log("pushing to to-sync from success function " + i);
         toSync.push("guest-" + i);
         localStorage.setItem('toSyncArray', toSync.join(','));
@@ -428,7 +511,7 @@ $.subscribe('/add/', function() {
 
         var toAppendHTMLString = '';
         toAppendHTMLString = "<tr id='guest-" + i + "'>" + // adding the id for the table row
-        "<td>" + 'status' + "</td>" + // html for the status column
+        "<td>" + status + "</td>" + // html for the status column
         "<td>" + dataRow[3] + "</td>" + // size of the party
         "<td>" + dataRow[0] + "</td>" + // name of the party
         "<td>" + arrivedDateString + "</td>" + // arrival time of the party
@@ -440,7 +523,7 @@ $.subscribe('/add/', function() {
         "<td><a class='remove' href='#'>X</a></td></tr>";
 
         $itemTable.children('tbody').append(toAppendHTMLString);
-
+*/
         //$itemTable.children('tbody').append(
         //    " <tr id='guest-" + i + "'>" + "<td>" + data1[3] + "</td> &nbsp;&nbsp;&nbsp;<td>" + data1[0] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[5] + "</td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[2] + "</td>" + "&nbsp;&nbsp;&nbsp;<td class=\"waited\">0:0</td>" + "&nbsp;&nbsp;&nbsp;<td><a class='notify' href='#'>Notify</a></td>" + "&nbsp;&nbsp;&nbsp;<td><a class='seat' href='#'>Seat</a></td>" + "&nbsp;&nbsp;&nbsp;<td>" + data1[4] + "</td>" + "<td><a class='remove' href='#'>X</a></td></tr>"
         //);
